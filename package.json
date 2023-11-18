@@ -1,6 +1,6 @@
 {
-  "name": "redvsblueclient",
-  "version": "0.1.0",
+  "name": "redvsblueclientwgmi",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,20 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "next": "14.0.2",
-    "react": "^18",
-    "react-dom": "^18"
+    "next": "^14.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
+    "viem": "~0.3.36",
+    "wagmi": "^1.0.6"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.2",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "@types/node": "^17.0.31",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.3",
+    "eslint": "^8.15.0",
+    "eslint-config-next": "^12.1.6",
+    "typescript": "^5.0.4"
   }
 }
