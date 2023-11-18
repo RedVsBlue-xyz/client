@@ -46,8 +46,8 @@ function clampNumber(value: number) {
 export const Game = () => {
   const { round, isSuccess, isLoading } = useRound()
   const {address} = useAccount()
-  const {totalRewards, roundsWithRewards}  = useRewards(address)
-  const {redContributions, blueContributions} = useContributions(round?.roundNumber, address)
+  const {totalRewards, roundsWithRewards}  = useRewards(address as any)
+  const {redContributions, blueContributions} = useContributions(round?.roundNumber as any, address as any)
   const [timer, setTimer] = useState('');
   const [redWidth, blueWidth] = calculateWidth(Number(round.totalRed), Number(round.totalBlue));
   console.log("rounds with rewards", roundsWithRewards)
@@ -86,7 +86,7 @@ export const Game = () => {
         <p>Your contributions: {formatEther(redContributions ?? BigInt(0))} ETH</p>
         <p>Multiplier: {redMultiplier}X</p>
         {redContributions > 0 && <p>Rewards if win: {formatEther(BigInt(redRewardIfWin))} ETH</p>}
-        <p>Red's chance of winning: {Math.round(redChance * 100)}%</p>
+        <p>Red&apos;s chance of winning: {Math.round(redChance * 100)}%</p>
       </div>
       <div className="blue" style={{ width: `${blueWidth}%` }}>
         <h1>{formatEther(round.totalBlue ?? BigInt(0))} ETH</h1>
@@ -94,16 +94,17 @@ export const Game = () => {
         <p>Your contributions: {formatEther(blueContributions ?? BigInt(0))} ETH</p>
         <p>Multiplier: {blueMultiplier}X</p>
         {blueContributions > 0 && <p>Rewards if win: {formatEther(BigInt(blueRewardIfWin))} ETH</p>}
-        <p>Blue's chance of winning: {Math.round(blueChance * 100)}%</p>
-      </div>
-      <div className="timer" style={{ left: timerPosition }}>
-        <div>{timer}</div>
-        <p style={{fontSize:"10px"}}>Rewards:{formatEther(totalRewards ?? BigInt(0))} ETH</p>
-        <MovesClaimRewards address={address} />
-        <MovesEndRound /> 
+        <p>Blue&apos;s chance of winning: {Math.round(blueChance * 100)}%</p>
         </div>
-      {/* <MovesEndRound /> */}
-    </div>
-  );
+        <div className="timer" style={{ left: timerPosition }}>
+          <div>{timer}</div>
+          <p style={{ fontSize: "10px" }}>Rewards: {formatEther(BigInt(totalRewards) ?? BigInt(0))} ETH</p>
+          <MovesClaimRewards address={address} />
+          <MovesEndRound />
+        </div>
+        {/* <MovesEndRound /> */}
+
+        </div>
+        );
 };
 

@@ -17,7 +17,7 @@ const [value, setValue] = useState('')
 const { config } = usePrepareContractWrite({
     ...redVsBlueContractConfig,
     functionName: 'contributeToBlue',
-    value: parseUnits(value, 18),
+    value: parseUnits(value as any, 18),
 })
 const { write, data, error, isLoading, isError } = useContractWrite(config)
 const {
