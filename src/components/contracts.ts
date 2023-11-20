@@ -208,8 +208,8 @@ export const usdcContractConfig = {
   abi: erc20ABI,
 } as const
 
-export const redVsBlueContractConfig = {
-  address: "0x19a22Ef646A0A113E1815Cc16D9Fd32BF21bFCf9",
+export const colorClashContractConfig = {
+  address: "0xb84dbD627DC2213BCaD0d4DE1b77831f2d5625dD",
   abi: [
     {
       "inputs": [],
@@ -237,31 +237,6 @@ export const redVsBlueContractConfig = {
       ],
       "name": "OwnableUnauthorizedAccount",
       "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "isRed",
-          "type": "bool"
-        }
-      ],
-      "name": "Contribution",
-      "type": "event"
     },
     {
       "anonymous": false,
@@ -325,20 +300,45 @@ export const redVsBlueContractConfig = {
         },
         {
           "indexed": false,
-          "internalType": "enum RedVsBlue.RoundState",
-          "name": "status",
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
           "type": "uint8"
         },
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "totalRed",
+          "name": "deduction",
+          "type": "uint256"
+        }
+      ],
+      "name": "RoundColorDeduction",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "roundNumber",
           "type": "uint256"
         },
         {
           "indexed": false,
+          "internalType": "enum ColorClash.RoundState",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "winner",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
           "internalType": "uint256",
-          "name": "totalBlue",
+          "name": "reward",
           "type": "uint256"
         }
       ],
@@ -371,6 +371,55 @@ export const redVsBlueContractConfig = {
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isBuy",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "shareAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "ethAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "protocolEthAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "supply",
+          "type": "uint256"
+        }
+      ],
+      "name": "Trade",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "GAME_DURATION",
       "outputs": [
@@ -386,9 +435,27 @@ export const redVsBlueContractConfig = {
     {
       "inputs": [
         {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
           "internalType": "uint256",
-          "name": "",
+          "name": "amount",
           "type": "uint256"
+        }
+      ],
+      "name": "buyShares",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "",
+          "type": "uint8"
         },
         {
           "internalType": "address",
@@ -396,7 +463,7 @@ export const redVsBlueContractConfig = {
           "type": "address"
         }
       ],
-      "name": "blueContributions",
+      "name": "colorSharesBalance",
       "outputs": [
         {
           "internalType": "uint256",
@@ -410,46 +477,43 @@ export const redVsBlueContractConfig = {
     {
       "inputs": [
         {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "name": "colors",
+      "outputs": [
+        {
           "internalType": "uint256",
-          "name": "roundNumber",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "supply",
           "type": "uint256"
         }
       ],
-      "name": "claimReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "roundNumbers",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "claimRewardsFromRounds",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "contributeToBlue",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "contributeToRed",
-      "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "currentRound",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deductionFee",
       "outputs": [
         {
           "internalType": "uint256",
@@ -481,6 +545,174 @@ export const redVsBlueContractConfig = {
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "scalingFactor",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAdjustedPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBuyPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBuyPriceAfterFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        }
+      ],
+      "name": "getScalingFactor",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSellPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSellPriceAfterFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "owner",
       "outputs": [
@@ -495,12 +727,12 @@ export const redVsBlueContractConfig = {
     },
     {
       "inputs": [],
-      "name": "protocolFee",
+      "name": "protocolFeeDestination",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -508,12 +740,12 @@ export const redVsBlueContractConfig = {
     },
     {
       "inputs": [],
-      "name": "protocolFeeDestination",
+      "name": "protocolFeePercent",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "uint256",
           "name": "",
-          "type": "address"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -538,58 +770,10 @@ export const redVsBlueContractConfig = {
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "redContributions",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "renounceOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "roundNumber",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "rewards",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -603,23 +787,18 @@ export const redVsBlueContractConfig = {
       "name": "rounds",
       "outputs": [
         {
-          "internalType": "uint256",
-          "name": "totalRed",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalBlue",
-          "type": "uint256"
-        },
-        {
           "internalType": "bool",
           "name": "ended",
           "type": "bool"
         },
         {
-          "internalType": "enum RedVsBlue.RoundState",
+          "internalType": "enum ColorClash.RoundState",
           "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "winner",
           "type": "uint8"
         },
         {
@@ -640,9 +819,53 @@ export const redVsBlueContractConfig = {
               "type": "uint256[]"
             }
           ],
-          "internalType": "struct RedVsBlue.VrfRequestStatus",
+          "internalType": "struct ColorClash.VrfRequestStatus",
           "name": "vrfRequestStatus",
           "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum ColorClash.ColorTypes",
+          "name": "color",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "sellShares",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_randomWord",
+          "type": "uint256"
+        }
+      ],
+      "name": "testFulfillRandomWords",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalValueDeposited",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -659,25 +882,6 @@ export const redVsBlueContractConfig = {
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "viewTotalRewards",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
