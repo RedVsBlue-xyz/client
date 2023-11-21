@@ -40,8 +40,8 @@ export interface State {
     currentRoundNumber: number,
     round: Round,
     totalValueDeposited: number,
-    colors: {[colorTypes: number]: Color}
-    colorsPrice: {[colorTypes: number]: number}
+    colors: {[colorTypes: number]: Color},
+    colorsPrice: {[colorTypes: number]: number},    
 }
 
 export interface UserInfo {

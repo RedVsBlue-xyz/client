@@ -6,10 +6,13 @@ import { MovesEndRound } from './moves/MovesEndRound';
 import { MovesContributeBlue } from './moves/MovesContributeBlue';
 import { MovesContributeRed } from './moves/MovesContributeRed';
 
-import { useRound, type Round, useRewards, useContributions } from './ReadContracts';
+import { useGameState, useTimeTill, useUserInfo } from "../hooks/state"
 import { ModalGameResult } from './modals/ModalGameResult';
 import { useAccount } from 'wagmi';
 import { MovesClaimRewards } from './moves/MovesClaimRewards';
+import { ColorTypes } from '../types';
+import { ActionBuyShare } from './actions/ActionBuyShare';
+import { ActionSellShare } from './actions/ActionSellShare';
 
 function clampNumber(value: number) {
     return Math.min(Math.max(value, 15), 85);
@@ -44,62 +47,67 @@ function clampNumber(value: number) {
 
 
 export const Game = () => {
-  const { round, isSuccess, isLoading } = useRound()
-  const {address} = useAccount()
-  const {totalRewards, roundsWithRewards}  = useRewards(address as any)
-  const {redContributions, blueContributions} = useContributions(round?.roundNumber as any, address as any)
-  const [timer, setTimer] = useState('');
-  const [redWidth, blueWidth] = calculateWidth(Number(round.totalRed), Number(round.totalBlue));
-  console.log("rounds with rewards", roundsWithRewards)
+  const { address } = useAccount()
+  const { colorSharesBalance } = useUserInfo(address as any)
+  const  { 
+    gameEndTime,
+    currentRoundNumber,
+    round,
+    totalValueDeposited,
+    colors,
+    colorsPrice,
+  } = useGameState()
+  const { 
+    supply: redSupply ,
+    value: redValue,
+  } = colors[ColorTypes.Red];
+  const { 
+    supply: blueSupply,
+    value: blueValue,
+  } = colors[ColorTypes.Blue];
+  const redBalance = colorSharesBalance[ColorTypes.Red];
+  const blueBalance = colorSharesBalance[ColorTypes.Blue];
+  const timer = useTimeTill(gameEndTime);
+  const redPrice = colorsPrice[ColorTypes.Red];
+  const bluePrice = colorsPrice[ColorTypes.Blue];
+  const [redWidth, blueWidth] = calculateWidth(redValue, blueValue);
   // Calculate the position of the timer
   const timerPosition = `${redWidth}%`;
-  const total = Number(round.totalRed) + Number(round.totalBlue);
-  const redChance = Number(round.totalRed) != 0 ? (Number(round.totalRed) / (Number(round.totalRed) + Number(round.totalBlue))) : 0;
-  const blueChance = Number(round.totalBlue) != 0 ? 1 - redChance : 0;
-  const redMultiplier = Number(round.totalRed) > 0 ? total / Number(round.totalRed) : 0;
-  const blueMultiplier = Number(round.totalBlue) > 0 ? total / Number(round.totalBlue) : 0;
-  const redRewardIfWin = Number(redContributions) * redMultiplier;
-  const blueRewardIfWin = Number(blueContributions) * blueMultiplier;
+  const total = totalValueDeposited;
+  const redChance = redValue != 0 ? (redValue / (redValue + blueValue)) : 0;
+  const blueChance = blueValue != 0 ? 1 - redChance : 0;
+  const redMultiplier = redValue > 0 ? total / redValue : 0;
+  const blueMultiplier = blueValue > 0 ? total / blueValue : 0;
+  const redPriceIfWin = redPrice * redMultiplier;
+  const bluePriceIfWin = bluePrice * blueMultiplier;
   console.log('redMultiplier', redMultiplier)
   console.log('blueMultiplier', blueMultiplier)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-        console.log('round', round)
-      if (Number(round.endTime) > 0) {
-        const now = Date.now()/1000;
-        const remainingTime = Math.max(0, Number(round.endTime) - now);
-        console.log('remainingTime', remainingTime)
-        setTimer(new Date(remainingTime * 1000).toISOString().substr(11, 8));
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [round.endTime]);
 
   return (
     <div className="container">
       <ModalGameResult />
       <div className="red" style={{ width: `${redWidth}%` }}>
-        <h1>{formatEther(round.totalRed ?? BigInt(0))} ETH</h1>
-        <MovesContributeRed />
-        <p>Your contributions: {formatEther(redContributions ?? BigInt(0))} ETH</p>
+        <h1>{redValue} ETH</h1>
+        <ActionBuyShare colorType={ColorTypes.Red} />
+        <ActionSellShare colorType={ColorTypes.Red} />
+        <p>Your amount of shares: {redBalance} </p>
+        <p>Your shares are worth: {redBalance * redPrice} ETH</p>
         <p>Multiplier: {redMultiplier}X</p>
-        {redContributions > 0 && <p>Rewards if win: {formatEther(BigInt(redRewardIfWin))} ETH</p>}
+        <p>Share price if win: {redPriceIfWin} ETH</p>
         <p>Red&apos;s chance of winning: {Math.round(redChance * 100)}%</p>
       </div>
       <div className="blue" style={{ width: `${blueWidth}%` }}>
-        <h1>{formatEther(round.totalBlue ?? BigInt(0))} ETH</h1>
-        <MovesContributeBlue />
-        <p>Your contributions: {formatEther(blueContributions ?? BigInt(0))} ETH</p>
+        <h1>{blueValue} ETH</h1>
+        <ActionBuyShare colorType={ColorTypes.Blue} />
+        <ActionSellShare colorType={ColorTypes.Blue} />
+        <p>Your amount of shares: {blueBalance} </p>
+        <p>Your shares are worth: {blueBalance * bluePrice} ETH</p>
         <p>Multiplier: {blueMultiplier}X</p>
-        {blueContributions > 0 && <p>Rewards if win: {formatEther(BigInt(blueRewardIfWin))} ETH</p>}
+        <p>Share price if win: {bluePriceIfWin} ETH</p>
         <p>Blue&apos;s chance of winning: {Math.round(blueChance * 100)}%</p>
         </div>
         <div className="timer" style={{ left: timerPosition }}>
           <div>{timer}</div>
-          <p style={{ fontSize: "10px" }}>Rewards: {formatEther(BigInt(totalRewards) ?? BigInt(0))} ETH</p>
-          <MovesClaimRewards address={address} />
           <MovesEndRound />
         </div>
         {/* <MovesEndRound /> */}
