@@ -9,6 +9,11 @@ export enum ColorTypes {
     None
 }
 
+export const ColorsList = [
+    ColorTypes.Red,
+    ColorTypes.Blue,
+]
+
 export enum RoundState {
     None, // Round has not started
     Open, // Round is open for contributions

@@ -11,7 +11,7 @@ import {
 import { colorClashContractConfig } from '../contracts'
 import { stringify } from '../../utils/stringify'
 
-export function MovesEndRound() {
+export function ActionEndRound() {
 
   const { config } = usePrepareContractWrite({
     ...colorClashContractConfig,

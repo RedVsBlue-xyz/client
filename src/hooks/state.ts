@@ -3,10 +3,11 @@ import {
     UserInfo, 
     Round, 
     Color, 
-    ColorTypes 
+    ColorTypes ,
+    ColorsList,
 } from "../types";
 import { useAccount, useContractReads } from 'wagmi'
-import { colorClashContractConfig } from "../components/contracts";
+import { colorClashContractConfig, redVsBlueContractConfig } from "../components/contracts";
 import { useEffect, useMemo, useState } from "react";
 
 export const useGameState = (): State => {
@@ -28,7 +29,7 @@ export const useGameState = (): State => {
 
 export const useUserInfo = (address: string | undefined): UserInfo => {
     const contracts = useMemo(() => {
-        return Object.values(ColorTypes).map((colorType) => ({
+        return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
             functionName: 'colorSharesBalance',
             args: [colorType, address as string],
@@ -39,7 +40,7 @@ export const useUserInfo = (address: string | undefined): UserInfo => {
         watch: true,
     });
     let colorSharesBalance:  {[colorTypes: number]: number} = {}
-    Object.values(ColorTypes).forEach((colorType: string | ColorTypes) => {
+    ColorsList.forEach((colorType: string | ColorTypes) => {
         const result = data?.[colorType as ColorTypes]?.result as bigint || undefined;
         const balance = Number(result ?? 0)
         colorSharesBalance[colorType as ColorTypes] = balance
@@ -81,6 +82,7 @@ export const useTotalValueDeposited = (): number => {
         }],
         watch: true,
     })
+    console.log("Total value deposited", data?.[0].result)
     return Number(data?.[0].result ?? 0)
 }
 
@@ -109,8 +111,10 @@ export const useRound = (): Round => {
 }
 
 export const useColors = (): {[colorTypes: number]: Color} => {
+    console.log(ColorTypes)
+    const [colors, setColors] = useState<{[colorTypes: number]: Color}>({});
     const contracts = useMemo(() => {
-        return Object.values(ColorTypes).map((colorType) => ({
+        return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
             functionName: 'colors',
             args: [colorType],
@@ -118,22 +122,42 @@ export const useColors = (): {[colorTypes: number]: Color} => {
     }, [])
 
     const { data, isSuccess, isLoading } = useContractReads({
-        contracts,
+        contracts: [
+            {
+                ...colorClashContractConfig,
+                functionName: "colors",
+                args: [0],
+                chainId: 421613
+            },
+            {
+                ...colorClashContractConfig,
+                functionName: "colors",
+                args: [1],
+                chainId: 421613
+            }
+        ],
         watch: true,
     })
-    let colors:  {[colorTypes: number]: Color} = {}
-    Object.values(ColorTypes).forEach((colorType: string | ColorTypes) => {
-        const result = data?.[colorType as ColorTypes]?.result as bigint[] || undefined;
-        const value = Number(result[0] ?? 0)
-        const supply = Number(result[1] ?? 0)
-        colors[colorType as ColorTypes] = { value, supply }
-    });
-    return colors
+    console.log("Colors hoping to find", data)
+    useEffect(()=>{
+        if(isSuccess){
+            let temp:{[colorTypes: number]: Color} = {}
+            ColorsList.forEach((colorType: string | ColorTypes) => {
+                const result = data?.[0]
+                const value = Number(result ?? 0)
+                const supply = Number(result ?? 0)
+                temp[colorType as ColorTypes] = { value, supply }
+            });
+            setColors(temp);
+        }
+    },[isSuccess, isLoading])
+
+    return colors;
 }
 
 export const useColorsPrice = (): {[colorTypes: number]: number} => {
     const contracts = useMemo(() => {
-        return Object.values(ColorTypes).map((colorType) => ({
+        return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
             functionName: 'getBuyPrice',
             args: [colorType],
@@ -145,7 +169,7 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
         watch: true,
     })
     let colorsPrice:  {[colorTypes: number]: number} = {}
-    Object.values(ColorTypes).forEach((colorType: string | ColorTypes) => {
+    ColorsList.forEach((colorType: string | ColorTypes) => {
         const result = data?.[colorType as ColorTypes]?.result as bigint || undefined;
         const price = Number(result ?? 0)
         colorsPrice[colorType as ColorTypes] = price
@@ -217,3 +241,28 @@ export const useColorSellPrice = (colorType: ColorTypes, amount: number): {price
     const priceAfterFees = Number(data?.[1].result ?? BigInt(0))
     return { price, priceAfterFees }
 }
+
+export const useContributions = (round: bigint, address: `0x${string}`): { redContributions: bigint, blueContributions: bigint } => {
+    const { data, isSuccess, isLoading } = useContractReads({
+      contracts: [
+        {
+          ...redVsBlueContractConfig,
+          functionName: 'redContributions',
+          args: [round, address],
+        },
+        {
+          ...redVsBlueContractConfig,
+          functionName: 'blueContributions',
+          args: [round, address],
+        },
+      ],
+      watch: true,
+    })
+  
+    console.log('data', data)
+  
+    return {
+      redContributions: data?.[0].result ?? BigInt(0),
+      blueContributions: data?.[1].result ?? BigInt(0),
+    }
+  }

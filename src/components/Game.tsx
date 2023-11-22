@@ -3,16 +3,15 @@ import { formatEther } from 'viem';
 import React, { useEffect, useState } from 'react';
 
 import { MovesEndRound } from './moves/MovesEndRound';
-import { MovesContributeBlue } from './moves/MovesContributeBlue';
-import { MovesContributeRed } from './moves/MovesContributeRed';
 
-import { useGameState, useTimeTill, useUserInfo } from "../hooks/state"
+import { useContributions, useGameState, useTimeTill, useUserInfo } from "../hooks/state"
 import { ModalGameResult } from './modals/ModalGameResult';
-import { useAccount } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import { MovesClaimRewards } from './moves/MovesClaimRewards';
 import { ColorTypes } from '../types';
 import { ActionBuyShare } from './actions/ActionBuyShare';
 import { ActionSellShare } from './actions/ActionSellShare';
+import { ActionEndRound } from './actions/ActionEndRound';
 
 function clampNumber(value: number) {
     return Math.min(Math.max(value, 15), 85);
@@ -48,6 +47,11 @@ function clampNumber(value: number) {
 
 export const Game = () => {
   const { address } = useAccount()
+  const  { chain } = useNetwork()
+  const {redContributions, blueContributions} = useContributions(BigInt(5), '0xECB977fA63E71894e9C351d0D26C28F55cb87276');
+  console.log("redContributions", redContributions)
+  console.log("blueContributions", blueContributions)
+  console.log("current chain", chain)
   const { colorSharesBalance } = useUserInfo(address as any)
   const  { 
     gameEndTime,
@@ -57,13 +61,14 @@ export const Game = () => {
     colors,
     colorsPrice,
   } = useGameState()
+  console.log("colors found", colors)
   const { 
-    supply: redSupply ,
-    value: redValue,
+    supply: redSupply = 0,
+    value: redValue = 0,
   } = colors[ColorTypes.Red];
   const { 
-    supply: blueSupply,
-    value: blueValue,
+    supply: blueSupply = 0,
+    value: blueValue = 0,
   } = colors[ColorTypes.Blue];
   const redBalance = colorSharesBalance[ColorTypes.Red];
   const blueBalance = colorSharesBalance[ColorTypes.Blue];
@@ -82,6 +87,8 @@ export const Game = () => {
   const bluePriceIfWin = bluePrice * blueMultiplier;
   console.log('redMultiplier', redMultiplier)
   console.log('blueMultiplier', blueMultiplier)
+
+  
 
   return (
     <div className="container">
@@ -108,7 +115,7 @@ export const Game = () => {
         </div>
         <div className="timer" style={{ left: timerPosition }}>
           <div>{timer}</div>
-          <MovesEndRound />
+          <ActionEndRound />
         </div>
         {/* <MovesEndRound /> */}
 
