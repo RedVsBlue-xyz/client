@@ -9,9 +9,36 @@ export enum ColorTypes {
     None
 }
 
+export const ColorTypeToHex = {
+    [ColorTypes.Red]: '#FF0000',
+    [ColorTypes.Orange]: '#FFA500',
+    [ColorTypes.Yellow]: '#FFFF00',
+    [ColorTypes.Green]: '#008000',
+    [ColorTypes.Blue]: '#0000FF',
+    [ColorTypes.Indigo]: '#4B0082',
+    [ColorTypes.Violet]: '#EE82EE',
+    [ColorTypes.None]: '#FFFFFF',
+}
+
+export const ColorTypeToString = {
+    [ColorTypes.Red]: 'Red',
+    [ColorTypes.Orange]: 'Orange',
+    [ColorTypes.Yellow]: 'Yellow',
+    [ColorTypes.Green]: 'Green',
+    [ColorTypes.Blue]: 'Blue',
+    [ColorTypes.Indigo]: 'Indigo',
+    [ColorTypes.Violet]: 'Violet',
+    [ColorTypes.None]: 'None',
+}
+
 export const ColorsList = [
     ColorTypes.Red,
+    ColorTypes.Orange,
+    ColorTypes.Yellow,
+    ColorTypes.Green,
     ColorTypes.Blue,
+    ColorTypes.Indigo,
+    ColorTypes.Violet,
 ]
 
 export enum RoundState {

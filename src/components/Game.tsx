@@ -1,10 +1,10 @@
 'use client'
-import { formatEther } from 'viem';
+import { formatEther, parseEther, parseUnits } from 'viem';
 import React, { useEffect, useState } from 'react';
 
 import { MovesEndRound } from './moves/MovesEndRound';
 
-import { useContributions, useGameState, useTimeTill, useUserInfo } from "../hooks/state"
+import { useColors, useColorsPrice, useContributions, useCurrentRoundNumber, useGameEndTime, useGameState, useRound, useTimeTill, useTotalValueDeposited, useUserInfo } from "../hooks/state"
 import { ModalGameResult } from './modals/ModalGameResult';
 import { useAccount, useNetwork } from 'wagmi';
 import { MovesClaimRewards } from './moves/MovesClaimRewards';
@@ -12,6 +12,7 @@ import { ColorTypes } from '../types';
 import { ActionBuyShare } from './actions/ActionBuyShare';
 import { ActionSellShare } from './actions/ActionSellShare';
 import { ActionEndRound } from './actions/ActionEndRound';
+import RectangularPieChart from './GameChart';
 
 function clampNumber(value: number) {
     return Math.min(Math.max(value, 15), 85);
@@ -48,10 +49,7 @@ function clampNumber(value: number) {
 export const Game = () => {
   const { address } = useAccount()
   const  { chain } = useNetwork()
-  const {redContributions, blueContributions} = useContributions(BigInt(5), '0xECB977fA63E71894e9C351d0D26C28F55cb87276');
-  console.log("redContributions", redContributions)
-  console.log("blueContributions", blueContributions)
-  console.log("current chain", chain)
+  console.log("current cha  in", chain)
   const { colorSharesBalance } = useUserInfo(address as any)
   const  { 
     gameEndTime,
@@ -61,7 +59,12 @@ export const Game = () => {
     colors,
     colorsPrice,
   } = useGameState()
+  console.log("gameEndTime", gameEndTime)
+  console.log("currentRoundNumber", currentRoundNumber)
+  console.log("round", round)
+  console.log("totalValueDeposited", totalValueDeposited)
   console.log("colors found", colors)
+  console.log("colorsPrice", colorsPrice)
   const { 
     supply: redSupply = 0,
     value: redValue = 0,
@@ -91,35 +94,38 @@ export const Game = () => {
   
 
   return (
-    <div className="container">
-      <ModalGameResult />
-      <div className="red" style={{ width: `${redWidth}%` }}>
-        <h1>{redValue} ETH</h1>
-        <ActionBuyShare colorType={ColorTypes.Red} />
-        <ActionSellShare colorType={ColorTypes.Red} />
-        <p>Your amount of shares: {redBalance} </p>
-        <p>Your shares are worth: {redBalance * redPrice} ETH</p>
-        <p>Multiplier: {redMultiplier}X</p>
-        <p>Share price if win: {redPriceIfWin} ETH</p>
-        <p>Red&apos;s chance of winning: {Math.round(redChance * 100)}%</p>
-      </div>
-      <div className="blue" style={{ width: `${blueWidth}%` }}>
-        <h1>{blueValue} ETH</h1>
-        <ActionBuyShare colorType={ColorTypes.Blue} />
-        <ActionSellShare colorType={ColorTypes.Blue} />
-        <p>Your amount of shares: {blueBalance} </p>
-        <p>Your shares are worth: {blueBalance * bluePrice} ETH</p>
-        <p>Multiplier: {blueMultiplier}X</p>
-        <p>Share price if win: {bluePriceIfWin} ETH</p>
-        <p>Blue&apos;s chance of winning: {Math.round(blueChance * 100)}%</p>
-        </div>
-        <div className="timer" style={{ left: timerPosition }}>
-          <div>{timer}</div>
-          <ActionEndRound />
-        </div>
-        {/* <MovesEndRound /> */}
+    // <div className="container">
+    //   <ModalGameResult />
+    //   <div className="red" style={{ width: `${redWidth}%` }}>
+    //     <h1>{formatEther(BigInt(redValue))} ETH</h1>
+    //     <ActionBuyShare colorType={ColorTypes.Red} />
+    //     <ActionSellShare colorType={ColorTypes.Red} />
+    //     <p>Your amount of shares: {redBalance} </p>
+    //     <p>Your shares are worth: {redBalance * redPrice} ETH</p>
+    //     <p>Multiplier: {redMultiplier}X</p>
+    //     <p>Share price if win: {redPriceIfWin} ETH</p>
+    //     <p>Red&apos;s chance of winning: {Math.round(redChance * 100)}%</p>
+    //   </div>
+    //   <div className="blue" style={{ width: `${blueWidth}%` }}>
+    //     <h1>{blueValue} ETH</h1>
+    //     <ActionBuyShare colorType={ColorTypes.Blue} />
+    //     <ActionSellShare colorType={ColorTypes.Blue} />
+    //     <p>Your amount of shares: {blueBalance} </p>
+    //     <p>Your shares are worth: {blueBalance * bluePrice} ETH</p>
+    //     <p>Multiplier: {blueMultiplier}X</p>
+    //     <p>Share price if win: {bluePriceIfWin} ETH</p>
+    //     <p>Blue&apos;s chance of winning: {Math.round(blueChance * 100)}%</p>
+    //     </div>
+    //     <div className="timer" style={{ left: timerPosition }}>
+    //       <div>{timer}</div>
+    //       <ActionEndRound />
+    //     </div>
+    //     {/* <MovesEndRound /> */}
 
-        </div>
+    //     </div>
+    <RectangularPieChart
+  colors={colors}
+/>
         );
 };
 

@@ -71,6 +71,7 @@ export const useCurrentRoundNumber = (): number => {
         }],
         watch: true,
     })
+    console.log("currentRoundNumber", data)
     return Number(data?.[0].result ?? 0)
 }
 
@@ -112,7 +113,6 @@ export const useRound = (): Round => {
 
 export const useColors = (): {[colorTypes: number]: Color} => {
     console.log(ColorTypes)
-    const [colors, setColors] = useState<{[colorTypes: number]: Color}>({});
     const contracts = useMemo(() => {
         return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
@@ -122,35 +122,20 @@ export const useColors = (): {[colorTypes: number]: Color} => {
     }, [])
 
     const { data, isSuccess, isLoading } = useContractReads({
-        contracts: [
-            {
-                ...colorClashContractConfig,
-                functionName: "colors",
-                args: [0],
-                chainId: 421613
-            },
-            {
-                ...colorClashContractConfig,
-                functionName: "colors",
-                args: [1],
-                chainId: 421613
-            }
-        ],
+        contracts,
         watch: true,
     })
     console.log("Colors hoping to find", data)
-    useEffect(()=>{
-        if(isSuccess){
-            let temp:{[colorTypes: number]: Color} = {}
-            ColorsList.forEach((colorType: string | ColorTypes) => {
-                const result = data?.[0]
-                const value = Number(result ?? 0)
-                const supply = Number(result ?? 0)
-                temp[colorType as ColorTypes] = { value, supply }
-            });
-            setColors(temp);
-        }
-    },[isSuccess, isLoading])
+    let colors:{[colorTypes: number]: Color} = {}
+    ColorsList.forEach((colorType: string | ColorTypes) => {
+        const result = data?.[colorType as ColorTypes]?.result as bigint[]
+        console.log("result", result)
+        const value = Number(result[0] ?? 0)
+        const supply = Number(result[1] ?? 0)
+        colors[colorType as ColorTypes] = { value, supply }
+    });
+    console.log("result colors", colors)
+        
 
     return colors;
 }
@@ -160,7 +145,7 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
         return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
             functionName: 'getBuyPrice',
-            args: [colorType],
+            args: [Number(colorType), BigInt(1)],
         }))
     }, [])
 
@@ -168,6 +153,7 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
         contracts,
         watch: true,
     })
+    console.log("Colors price hoping to find", data)
     let colorsPrice:  {[colorTypes: number]: number} = {}
     ColorsList.forEach((colorType: string | ColorTypes) => {
         const result = data?.[colorType as ColorTypes]?.result as bigint || undefined;
@@ -178,16 +164,21 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
 }
 
 
-export const useTimeTill = (endTime: number): number => {
-    const [ timer, setTimer] = useState<number>(0);
+export const useTimeTill = (endTime: number): string => {
+    const [timer, setTimer] = useState<string>('0:00');
     const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
 
     useEffect(() => {
         if (endTime > 0) {
             const id = setInterval(() => {
                 const now = Date.now();
-                const timeTill = endTime - now;
-                setTimer(timeTill);
+                const timeTill = Math.max(endTime - Math.floor(now / 1000), 0);
+                
+                const minutes = Math.floor(timeTill / 60);
+                const seconds = timeTill % 60;
+
+                const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                setTimer(formattedTime);
             }, 1000);
             setIntervalId(id);
         }
@@ -197,7 +188,7 @@ export const useTimeTill = (endTime: number): number => {
     }, [endTime]);
 
     return timer;
-}
+};
 
 
 export const useColorBuyPrice = (colorType: ColorTypes, amount: number): {price: number, priceAfterFees: number} => {

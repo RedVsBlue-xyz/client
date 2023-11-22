@@ -11,18 +11,18 @@ import {
 
 import { colorClashContractConfig } from '../contracts'
 import { stringify } from '../../utils/stringify'
-import { ColorTypes } from '../../types'
+import { ColorTypeToString, ColorTypes } from '../../types'
 import { useColorBuyPrice } from '../../hooks/state'
 
 export function ActionBuyShare({colorType}: {colorType: ColorTypes}) {
     const [amount, setAmount] = useState(1)
     const { price, priceAfterFees } = useColorBuyPrice(colorType, amount)
-    const colorName = colorType === ColorTypes.Red ? 'RED' : 'BLUE';
+    const colorName = ColorTypeToString[colorType];
     const { config } = usePrepareContractWrite({
         ...colorClashContractConfig,
         functionName: 'buyShares',
         args: [Number(colorType), BigInt(amount)],
-        value: parseUnits(priceAfterFees as any, 18),
+        value: BigInt(priceAfterFees),
     })
     const { write, data, error, isLoading, isError } = useContractWrite(config)
     const {
