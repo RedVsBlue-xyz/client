@@ -125,6 +125,7 @@ export const Game = () => {
     //     </div>
     <RectangularPieChart
   colors={colors}
+  timeLeft={timer}
 />
         );
 };

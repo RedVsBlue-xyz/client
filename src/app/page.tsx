@@ -21,7 +21,6 @@ import { WriteContractPrepared } from '../components/WriteContractPrepared'
 export default function Page() {
   return (
     <>
-    <Connect />
       <Connected>
         <Game />
         {/* <hr />
