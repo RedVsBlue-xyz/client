@@ -9,17 +9,28 @@ export enum ColorTypes {
     None
 }
 
-export const ColorTypeToHex = {
-    [ColorTypes.Red]: '#FF0000',
-    [ColorTypes.Orange]: '#FFA500',
-    [ColorTypes.Yellow]: '#FFFF00',
-    [ColorTypes.Green]: '#008000',
-    [ColorTypes.Blue]: '#0000FF',
-    [ColorTypes.Indigo]: '#4B0082',
-    [ColorTypes.Violet]: '#EE82EE',
+export const ColorTypeToHex: any = {
+    [ColorTypes.Red]: '#F34242',
+    [ColorTypes.Orange]: '#ffa500',
+    [ColorTypes.Yellow]: '#faeb36',
+    [ColorTypes.Green]: '#79c314',
+    [ColorTypes.Blue]: '#487de7',
+    [ColorTypes.Indigo]: '#4b369d',
+    [ColorTypes.Violet]: '#70369d',
     [ColorTypes.None]: '#FFFFFF',
 }
 
+export const ColorTypeToHexButton = {
+    [ColorTypes.Red]: '#FF0000',
+    [ColorTypes.Orange]: '#ffa500',
+    [ColorTypes.Yellow]: '#faeb36',
+    [ColorTypes.Green]: '#79c314',
+    [ColorTypes.Blue]: '#0000FF',
+    [ColorTypes.Indigo]: '#4b369d',
+    [ColorTypes.Violet]: '#70369d',
+    [ColorTypes.None]: '#FFFFFF',
+}
+  
 export const ColorTypeToString = {
     [ColorTypes.Red]: 'Red',
     [ColorTypes.Orange]: 'Orange',

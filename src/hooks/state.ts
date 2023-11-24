@@ -128,7 +128,7 @@ export const useColors = (): {[colorTypes: number]: Color} => {
     console.log("Colors hoping to find", data)
     let colors:{[colorTypes: number]: Color} = {}
     ColorsList.forEach((colorType: string | ColorTypes) => {
-        const result = data?.[colorType as ColorTypes]?.result as bigint[]
+        const result = data?.[colorType as ColorTypes]?.result as bigint[] ?? [0, 0]
         console.log("result", result)
         const value = Number(result[0] ?? 0)
         const supply = Number(result[1] ?? 0)

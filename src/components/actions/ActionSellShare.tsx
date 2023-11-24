@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { colorClashContractConfig } from '../contracts';
-import { ColorTypeToString, ColorTypes } from '../../types';
+import { ColorTypeToString, ColorTypeToHexButton, ColorTypes } from '../../types';
 import { useColorSellPrice } from '../../hooks/state';
 
 export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
   const [amount, setAmount] = useState(1);
   const { price, priceAfterFees } = useColorSellPrice(colorType, amount);
   const colorName = ColorTypeToString[colorType];
+  const colorHex = ColorTypeToHexButton[ColorTypes.Red];
   const { config } = usePrepareContractWrite({
     ...colorClashContractConfig,
     functionName: 'sellShares',
@@ -27,6 +28,7 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
       }}>
         <button
             className='button'
+            style={{backgroundColor: colorHex}}
          type="submit"
          onClick={(e) => { e.stopPropagation(); }}
          >

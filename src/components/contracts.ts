@@ -209,7 +209,7 @@ export const usdcContractConfig = {
 } as const
 
 export const colorClashContractConfig = {
-  address: "0xb84dbD627DC2213BCaD0d4DE1b77831f2d5625dD",
+  address: "0x832700aaCeA64bc27aea26187Eb76FdE5CdfF729",
   abi: [
     {
       "inputs": [],

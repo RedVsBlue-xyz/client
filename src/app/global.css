@@ -1,19 +1,21 @@
+@import url('https://fonts.cdnfonts.com/css/public-pixel');
 
 body {
   margin: 0;
   padding: 0;
   --font-supply-mono: "__supplyMono_7b66fd","__supplyMono_Fallback_7b66fd",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   --grey-bg: rgb(43, 43, 43);
-  font-family: var(--font-supply-mono);
-    color: rgb(59, 59, 59);
+  font-family: 'Public Pixel', sans-serif;
+  color: rgb(59, 59, 59);
     background-color: black;
   }
 
   h1 {
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 1.2rem;
+    font-weight: lighter;
     margin: 0;
     word-spacing: 0.1px;
+    
   }
 .container {
     display: flex;
@@ -67,18 +69,70 @@ body {
   }
 
 .button {
-  padding: 4px 15px;
+  font-family: 'Public Pixel', sans-serif;
+
+  padding: 1px 9px;
   --font-supply-mono: "__supplyMono_7b66fd","__supplyMono_Fallback_7b66fd",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   --grey-bg: rgb(43, 43, 43);
-  font-family: var(--font-supply-mono);
-    color: rgb(59, 59, 59);
+    color: white;
     border: 0;
     border-radius: 2px;
     display: flex;
     flex-direction: row;
     align-items: center;
 ;   justify-content: space-between;;
-gap: 15px;
+font-weight: 900;
+gap: 10px;
+border-radius: 2px;
+box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+cursor: pointer;
+
+}
+
+p {
+  font-size: 0.7rem;
+  font-weight: bolder;
+  word-spacing: 0.05px;
+  letter-spacing: 0.05px;
+}
+
+@keyframes radiate {
+  0% {
+    filter: url(#glow);
+    transform: scale(1);
+  }
+  50% {
+    filter: url(#glow);
+    transform: scale(1.005);
+    background-color: rgb(255, 255, 255);
+  }
+  100% {
+    filter: url(#glow);
+    transform: scale(1);
+  }
+}
+
+.radiating-segment {
+  animation: radiate 2s infinite ease-in-out;
+}
+
+.wave-animation {
+  animation: radiate-wave 1s infinite ease-in-out;
+}
+
+@keyframes radiate-wave {
+  0%, 100% {
+  }
+  50% {
+    stop-opacity: 0.7;
+  }
+}
+
+
+
+a {
+  color: white;
+  font-size: smaller;
 }
 
   

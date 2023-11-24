@@ -124,8 +124,9 @@ export const Game = () => {
 
     //     </div>
     <RectangularPieChart
-  colors={colors}
-  timeLeft={timer}
+  colors={colors as any}
+  colorsPrice={colorsPrice as any}
+  timeLeft={timer as any}
 />
         );
 };
