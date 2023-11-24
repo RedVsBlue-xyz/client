@@ -28,7 +28,7 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
       }}>
         <button
             className='button'
-            style={{backgroundColor: colorHex}}
+            style={{color: colorHex}}
          type="submit"
          onClick={(e) => { e.stopPropagation(); }}
          >

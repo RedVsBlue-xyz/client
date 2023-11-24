@@ -8,10 +8,11 @@ body {
   font-family: 'Public Pixel', sans-serif;
   color: rgb(59, 59, 59);
     background-color: black;
+    overflow: hidden;
   }
 
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: lighter;
     margin: 0;
     word-spacing: 0.1px;
@@ -83,14 +84,23 @@ body {
 ;   justify-content: space-between;;
 font-weight: 900;
 gap: 10px;
-border-radius: 2px;
-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+border-radius: 5px;
 cursor: pointer;
+background-color: white;
+box-shadow: 2px 5px #0000008a;
+
+
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.904);
+  box-shadow: 5px 10px #0000008a;
 
 }
 
 p {
-  font-size: 0.7rem;
+
+  font-size: 1rem;
   font-weight: bolder;
   word-spacing: 0.05px;
   letter-spacing: 0.05px;
@@ -103,7 +113,7 @@ p {
   }
   50% {
     filter: url(#glow);
-    transform: scale(1.005);
+    transform: scale(1.01);
     background-color: rgb(255, 255, 255);
   }
   100% {
@@ -133,6 +143,28 @@ p {
 a {
   color: white;
   font-size: smaller;
+}
+
+.stats {
+  display: flex;
+  position: absolute;
+  height: 70px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  z-index: 100000;
+  background-color: white;
+  padding: 00px 20px;
+  overflow: hidden;
+  gap: 100px;
+}
+
+.small-p {
+  font-size: 0.8rem;
+  word-spacing: 0.05px;
+  letter-spacing: 0.05px;
+  margin: 0;
+  padding: 0;
 }
 
   

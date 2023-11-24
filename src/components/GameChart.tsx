@@ -152,11 +152,16 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
           color: 'white',
           transition: 'left 0.3s ease, top 0.3s ease'
         }}>
-          <p style={{textDecoration:"underline"}}>{ColorTypeToString[segment.colorType]}</p>
-            <div style={{display:"flex", gap:"20px"}}>
+          <h1 >{ColorTypeToString[segment.colorType]}</h1>
+          <div style={{display:"flex", gap:"20px"}}>
+            <p>{parseFloat(formatEther(BigInt(segment.value))).toFixed(4)}ETH</p>
+            <p>{Math.round((segment.value / total) * 100)}%</p>
+          </div>
+          {hoveredSegmentIndex === index && <a href='#'>Buy/Sell</a>}          
+          {/* <div style={{display:"flex", gap:"20px"}}>
             <h1>{parseFloat(formatEther(BigInt(segment.value))).toFixed(4)} ETH</h1>
             {hoveredSegmentIndex === index && <h1>{Math.round((segment.value / total) * 100)}%</h1>}
-                </div>
+          </div>
           <div style={{display:"flex", gap:"20px"}}>
             <p ><span style={{textDecoration:"underline"}}>Share Price</span>: {parseFloat(formatEther(BigInt(colorsPrice[segment.colorType]))).toFixed(4)}ETH</p>
             <p><span style={{textDecoration:"underline"}}>Supply</span>: {colors[segment.colorType].supply}</p>
@@ -167,7 +172,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
             <ActionSellShare colorType={segment.colorType} />
           </div>
           }
-          {hoveredSegmentIndex === index && <a href='#'>More stats</a>}
+          {hoveredSegmentIndex === index && <a href='#'>More stats</a>} */}
         </div>
       ))}
       <div className='timer'>

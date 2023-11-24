@@ -13,6 +13,7 @@ import { ActionBuyShare } from './actions/ActionBuyShare';
 import { ActionSellShare } from './actions/ActionSellShare';
 import { ActionEndRound } from './actions/ActionEndRound';
 import RectangularPieChart from './GameChart';
+import { UserStats } from './UserStats';
 
 function clampNumber(value: number) {
     return Math.min(Math.max(value, 15), 85);
@@ -59,6 +60,9 @@ export const Game = () => {
     colors,
     colorsPrice,
   } = useGameState()
+
+  const userInfo = useUserInfo(address as any)
+  console.log("userInfo", userInfo)
   console.log("gameEndTime", gameEndTime)
   console.log("currentRoundNumber", currentRoundNumber)
   console.log("round", round)
@@ -123,11 +127,16 @@ export const Game = () => {
     //     {/* <MovesEndRound /> */}
 
     //     </div>
+    <>
     <RectangularPieChart
   colors={colors as any}
   colorsPrice={colorsPrice as any}
   timeLeft={timer as any}
 />
+        <UserStats userInfo={userInfo} />
+    </>
+    
+
         );
 };
 

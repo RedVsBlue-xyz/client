@@ -2,7 +2,7 @@ import './global.css'
 import { Providers } from './providers'
 
 export const metadata = {
-  title: 'wagmi',
+  title: 'Colorclash.io',
 }
 
 export default function RootLayout({
