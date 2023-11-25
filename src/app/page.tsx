@@ -21,8 +21,8 @@ import { WriteContractPrepared } from '../components/WriteContractPrepared'
 export default function Page() {
   return (
     <>
+      <Game />
       <Connected>
-        <Game />
         {/* <hr />
         <h2>Network</h2>
         <NetworkSwitcher />

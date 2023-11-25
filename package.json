@@ -9,16 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.7",
     "next": "^14.0.3",
     "react": "^18.2.0",
+    "react-blockies": "^1.4.1",
     "react-dom": "^18.2.0",
+    "react-identicons": "^1.2.5",
+    "react-jazzicon": "^1.0.4",
     "react-modal": "^3.16.1",
-    "viem": "~0.3.36",
+    "viem": "^0.3.50",
     "wagmi": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.9",
+    "@types/react-blockies": "^1.4.4",
     "@types/react-dom": "^18.0.3",
     "eslint": "^8.15.0",
     "eslint-config-next": "^12.1.6",

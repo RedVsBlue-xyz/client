@@ -4,6 +4,8 @@ import { formatEther } from 'viem';
 import { ActionBuyShare } from './actions/ActionBuyShare';
 import { ActionSellShare } from './actions/ActionSellShare';
 import { ActionEndRound } from './actions/ActionEndRound';
+import { Connected } from './Connected';
+import { Connect } from './Connect';
 
 const EXPANSION_DEGREE = 2; // Degree by which a segment expands on hover
 const MIN_DEGREE_PER_SEGMENT = 10; // Minimum degree for a segment
@@ -176,8 +178,10 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
         </div>
       ))}
       <div className='timer'>
-        <p>Next battle in:</p>
+        <div style={{textAlign:"center"}}>Next <br></br> clash in:</div>
         <h1>{timeLeft}</h1>
+        <Connect/>
+
         </div>  
     </div>
   );

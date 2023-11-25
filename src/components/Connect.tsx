@@ -9,26 +9,22 @@ export function Connect() {
     useConnect()
   const { disconnect } = useDisconnect()
 
-  return (
-    <div>
-      <div>
-        {isConnected && (
-          <button onClick={() => disconnect()}>
-            Disconnect from {connector?.name}
-          </button>
-        )}
+  const newConnectors = [connectors[0]]
 
-        {connectors
+  return (
+    <>
+      {!isConnected && (<div>
+
+        {newConnectors
           .filter((x) => x.ready && x.id !== connector?.id)
           .map((x) => (
-            <button key={x.id} onClick={() => connect({ connector: x })}>
-              {x.name}
+            <button className='button' key={x.id} onClick={() => connect({ connector: x })}>
+              <p>Connect</p>
               {isLoading && x.id === pendingConnector?.id && ' (connecting)'}
             </button>
           ))}
       </div>
-
-      {error && <div>{(error as BaseError).shortMessage}</div>}
-    </div>
+      )}
+      </>
   )
 }
