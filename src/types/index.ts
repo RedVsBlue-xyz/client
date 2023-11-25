@@ -92,5 +92,10 @@ export interface UserInfo {
     colorSharesBalance: {[colorTypes: number]: number},
 }
 
+export interface DataPoint {
+    x: number,
+    y: number,
+}
+
 
 

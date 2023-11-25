@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { colorClashContractConfig } from '../contracts';
-import { ColorTypeToHexButton, ColorTypeToString, ColorTypes } from '../../types';
+import { ColorTypeToHex, ColorTypeToHexButton, ColorTypeToString, ColorTypes } from '../../types';
 import { useColorBuyPrice } from '../../hooks/state';
+import { formatEther } from 'viem';
 
 export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
   const [amount, setAmount] = useState(1);
@@ -27,13 +28,13 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
         write?.();
       }}>
         <button
-            className='button'
-            style={{color: colorHex}}
+            className='button big-button'
          type="submit"
          onClick={(e) => { e.stopPropagation(); }}
          >
             {' '}BUY{' '}
             <div >{amount}</div>
+            <div className='square' style={{backgroundColor:ColorTypeToHex[colorType], width:"40px", height:"40px"}}></div>
             <div style={{display:"flex", flexDirection:"column", gap:"-10px"}}>
                 <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
                 <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
@@ -41,6 +42,9 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
           
         </button>
       </form>
-          </div>
+      <p className='small-p'>Buy Price: {parseFloat(formatEther(BigInt(price))).toFixed(4)} ETH</p>
+      <p className='small-p'>Fees: {parseFloat(formatEther(BigInt(priceAfterFees - price))).toFixed(4)} ETH</p>
+      <p className='small-p'>Total: {parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)} ETH</p>
+    </div>
   );
 }

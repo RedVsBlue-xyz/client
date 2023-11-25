@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ColorTypes, ColorTypeToHex, Color, ColorTypeToString } from '../types';
 import { formatEther } from 'viem';
 import { ActionBuyShare } from './actions/ActionBuyShare';
@@ -6,6 +6,7 @@ import { ActionSellShare } from './actions/ActionSellShare';
 import { ActionEndRound } from './actions/ActionEndRound';
 import { Connected } from './Connected';
 import { Connect } from './Connect';
+import { ModalColorStatistics } from './modals/ModalColorStatistics';
 
 const EXPANSION_DEGREE = 2; // Degree by which a segment expands on hover
 const MIN_DEGREE_PER_SEGMENT = 10; // Minimum degree for a segment
@@ -28,7 +29,9 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
   const [segments, setSegments] = useState<SegmentInfo[]>([]);
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null);
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
-    const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [colorType, setColorType] = useState<ColorTypes>(ColorTypes.Blue);
+  const [show, setShow] = useState(false);
   useEffect(() => {
     function handleResize() {
       setDimensions({ width: window.innerWidth, height: window.innerHeight });
@@ -71,6 +74,13 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
     setSegments(newSegments as any);
   }, [colors, dimensions, hoveredSegmentIndex]);
 
+  const showColorModal = useMemo(() => {
+    return (colorType: ColorTypes) => {
+      setColorType(colorType);
+      setShow(true);
+    };
+  }, [colorType])
+
   const calculateSegment = (startAngle:any, endAngle:any, { width, height }:{width:any, height:any}, isHovered:any) => {
 
     if (isHovered) {
@@ -110,6 +120,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
 
   return (
     <div style={{ position: 'absolute', width: '100vw', height: '100vh', top: '0', left: '0', overflow: 'hidden' }}>
+      <ModalColorStatistics show={show} colorStats={{color: colorType}} onClose={() => setShow(false)} />
       <svg width="100%" height="100%">
       <defs>
         {Object.keys(ColorTypeToHex).map((colorType, index) => (
@@ -159,7 +170,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
             <p>{parseFloat(formatEther(BigInt(segment.value))).toFixed(4)}ETH</p>
             <p>{Math.round((segment.value / total) * 100)}%</p>
           </div>
-          {hoveredSegmentIndex === index && <a href='#'>Buy/Sell</a>}          
+          {hoveredSegmentIndex === index && <a onClick={()=>{showColorModal(segment.colorType)}} href='#'>Buy/Sell</a>}          
           {/* <div style={{display:"flex", gap:"20px"}}>
             <h1>{parseFloat(formatEther(BigInt(segment.value))).toFixed(4)} ETH</h1>
             {hoveredSegmentIndex === index && <h1>{Math.round((segment.value / total) * 100)}%</h1>}

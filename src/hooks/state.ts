@@ -5,7 +5,10 @@ import {
     Color, 
     ColorTypes ,
     ColorsList,
+    DataPoint,
+    RoundState,
 } from "../types";
+import { Event, EventType } from "../types/events";
 import { useAccount, useContractReads } from 'wagmi'
 import { colorClashContractConfig, redVsBlueContractConfig } from "../components/contracts";
 import { useEffect, useMemo, useState } from "react";
@@ -257,3 +260,71 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
       blueContributions: data?.[1].result ?? BigInt(0),
     }
   }
+
+
+
+export const useGetPriceHistory = (colorType: ColorTypes): DataPoint[] => {
+    return [
+        {x: 0, y: 0},
+        {x: 1, y: 1},
+        {x: 2, y: 2},
+        {x: 3, y: 3},
+        {x: 4, y: 4},
+        {x: 5, y: 5},
+    ]
+}
+
+export const useGetEventHistory = (): Event[] => {
+    return [
+        {
+
+            type: EventType.RoundStarted,
+            timestamp: 0,
+            round: 0,
+            startTime: 0,
+            endTime: 0,
+        },
+        {
+            type: EventType.RoundColorDeduction,
+            timestamp: 0,
+            roundNumber: 0,
+            color: ColorTypes.Red,
+            deduction: 0,
+        },
+        {
+            type: EventType.RoundEnded,
+            timestamp: 0,
+            roundNumber: 0,
+            status: RoundState.Finished,
+            winner: ColorTypes.Red,
+            reward: 0,
+        },
+    ]
+}
+
+export const useGetColorEventHistory = (colorType: ColorTypes): Event[] => {
+    return [
+        {
+            type: EventType.RoundStarted,
+            timestamp: 0,
+            round: 0,
+            startTime: 0,
+            endTime: 0,
+        },
+        {
+            type: EventType.RoundColorDeduction,
+            timestamp: 0,
+            roundNumber: 0,
+            color: ColorTypes.Red,
+            deduction: 0,
+        },
+        {
+            type: EventType.RoundEnded,
+            timestamp: 0,
+            roundNumber: 0,
+            status: RoundState.Finished,
+            winner: ColorTypes.Red,
+            reward: 0,
+        },
+    ]
+}

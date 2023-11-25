@@ -92,6 +92,14 @@ box-shadow: 2px 5px #0000008a;
 
 }
 
+.big-button {
+  padding: 5px 20px;
+  font-size: 30px;
+  width: 350px;
+  height: 90px;
+  margin: 20px 0;
+}
+
 .button:hover {
   background-color: rgba(255, 255, 255, 0.904);
   box-shadow: 5px 10px #0000008a;
@@ -146,7 +154,6 @@ a {
 }
 
 .stats {
-  display: none;
   position: absolute;
   height: 70px;
   width: 100%;
@@ -157,6 +164,7 @@ a {
   padding: 00px 20px;
   overflow: hidden;
   gap: 100px;
+  display: flex;
 }
 
 .small-p {
@@ -168,6 +176,17 @@ a {
   display: flex;
   align-items: center;
 }
+
+.smaller-p {
+  font-size: 0.5rem;
+  word-spacing: 0.5px;
+  letter-spacing: 0.05px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
 
 .square {
   height: 20px;
@@ -181,6 +200,28 @@ a {
   width: 20px;
   border-radius: 5px;
   margin-right: 10px;
+}
+
+.modal {
+  width: 40%;
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100000;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 10px 80px rgba(0, 0, 0, 0.568);
+  border-radius: 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
   

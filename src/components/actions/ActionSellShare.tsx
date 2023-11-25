@@ -3,6 +3,7 @@ import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from
 import { colorClashContractConfig } from '../contracts';
 import { ColorTypeToString, ColorTypeToHexButton, ColorTypes } from '../../types';
 import { useColorSellPrice } from '../../hooks/state';
+import { formatEther } from 'viem';
 
 export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
   const [amount, setAmount] = useState(1);
@@ -13,7 +14,7 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
     ...colorClashContractConfig,
     functionName: 'sellShares',
     args: [Number(colorType), BigInt(amount)],
-    value: BigInt(priceAfterFees),
+    value: BigInt(0),
   });
   const { write } = useContractWrite(config);
 
@@ -27,20 +28,24 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
         write?.();
       }}>
         <button
-            className='button'
-            style={{color: colorHex}}
+            className='button big-button'
          type="submit"
          onClick={(e) => { e.stopPropagation(); }}
          >
             {' '}SELL{' '}
             <div>{amount}</div>
+            <div className='square' style={{backgroundColor:ColorTypeToHexButton[colorType], width:"40px", height:"40px"}}></div>
             <div style={{display:"flex", flexDirection:"column", gap:"-10px"}}>
-            <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
-            <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
             </div>
           
         </button>
       </form>
+      <p className='small-p'>Sell Price:{parseFloat(formatEther(BigInt(price))).toFixed(4)}ETH</p>
+      <p className='small-p'>Fees:{parseFloat(formatEther(BigInt(price - priceAfterFees))).toFixed(4)}ETH</p>
+      <p className='small-p'>Total:{parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)}ETH</p>
+
        </div>
   );
 }
