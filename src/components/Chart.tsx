@@ -1,61 +1,78 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { DataPoint } from '../types';
 
-type Props = {
-  data: DataPoint[];
-  width?: number;
-  height?: number;
-};
-
-export const Chart: React.FC<Props> = ({ data, width = 460, height = 400 }) => {
-  const ref = useRef(null);
+export function Chart({ data }: {data: DataPoint[]}) {
+  const ref = useRef();
+  const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    if (!data || data.length === 0) return;
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const totalWidth = width * 6;
+    const height = 420;
+    const marginTop = 20;
+    const marginRight = 20;
+    const marginBottom = 30;
+    const marginLeft = 30;
+
+    const x = d3.scaleUtc()
+      .domain(d3.extent(data, d => d.x))
+      .range([marginLeft, totalWidth - marginRight]);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.y)]).nice(6)
+      .range([height - marginBottom, marginTop]);
+
+    const area = d3.area()
+      .curve(d3.curveStep)
+      .x(d => x(d.x))
+      .y0(y(0))
+      .y1(d => y(d.y));
 
     const svg = d3.select(ref.current);
-    svg.selectAll("*").remove(); // Clear svg content
+    svg.selectAll("*").remove(); // Clear previous renders
 
-    const margin = { top: 10, right: 30, bottom: 30, left: 60 };
-    const chartWidth = width - margin.left - margin.right;
-    const chartHeight = height - margin.top - margin.bottom;
+    const gAxisLeft = svg.append("g")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(d3.axisLeft(y).ticks(6))
+      .call(g => g.select(".domain").remove())
+      .call(g => g.select(".tick:last-of-type text").clone()
+          .attr("x", 3)
+          .attr("text-anchor", "start")
+          .attr("font-weight", "bold")
+          .text("$ Close"));
 
-    // Scales
-    const xScale = d3.scaleTime()
-                     .domain(d3.extent(data, d => d.x) as any)
-                     .range([0, chartWidth]);
-    
-    const yScale = d3.scaleLinear()
-                     .domain([0, d3.max(data, d => d.y)] as any)
-                     .range([chartHeight, 0]);
+    const scrollBody = d3.select('.scroll-body');
+    scrollBody.selectAll("*").remove(); // Clear previous renders
 
-    // Line generator
-    const line = d3.line<DataPoint>()
-                   .x(d => xScale(d.x))
-                   .y(d => yScale(d.y));
+    const scrollSvg = scrollBody.append("svg")
+      .attr("width", totalWidth)
+      .attr("height", height)
+      .style("display", "block");
 
-    // Append the line
-    svg.append("path")
-       .datum(data)
-       .attr("fill", "none")
-       .attr("stroke", "steelblue")
-       .attr("stroke-width", 1.5)
-       .attr("d", line);
+    scrollSvg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x).ticks(d3.utcMonth.every(1200 / width)).tickSizeOuter(0));
 
-    // Axes
-    svg.append("g")
-       .attr("transform", `translate(0,${chartHeight})`)
-       .call(d3.axisBottom(xScale));
-
-    svg.append("g")
-       .call(d3.axisLeft(yScale));
-
-  }, [data, height, width]);
+    scrollSvg.append("path")
+      .datum(data)
+      .attr("fill", "blue")
+      .attr("d", area);
+  }, [data, width]);
 
   return (
-    <svg ref={ref} width={width} height={height}>
-      {/* Line chart will be rendered here */}
-    </svg>
+    <div style={{ position: 'relative' }}>
+      <svg ref={ref} width={width} height={420} style={{ position: 'absolute', pointerEvents: 'none', zIndex: 1 }}></svg>
+      <div className='scroll-body' style={{ overflowX: 'scroll', WebkitOverflowScrolling: 'touch' }}></div>
+    </div>
   );
-};
+}
+

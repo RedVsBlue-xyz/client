@@ -192,7 +192,6 @@ a {
   height: 20px;
   width: 20px;
   border-radius: 5px;
-  margin-right: 10px;
 }
 
 .identicon {
@@ -213,8 +212,8 @@ a {
   padding: 20px;
   box-shadow: 0 10px 80px rgba(0, 0, 0, 0.568);
   border-radius: 10px;
+  max-height: 70%;
   overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .modal-close {

@@ -28,9 +28,9 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
         write?.();
       }}>
         <button
-            className='button big-button'
-         type="submit"
-         onClick={(e) => { e.stopPropagation(); }}
+          className='button big-button'
+          type="submit"
+          onClick={(e) => { e.stopPropagation(); }}
          >
             {' '}SELL{' '}
             <div>{amount}</div>

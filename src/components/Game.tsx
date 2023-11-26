@@ -1,5 +1,5 @@
 'use client'
-import { formatEther, parseEther, parseUnits } from 'viem';
+import { decodeEventLog, formatEther, parseEther, parseUnits } from 'viem';
 import React, { useEffect, useState } from 'react';
 
 import { MovesEndRound } from './moves/MovesEndRound';
@@ -14,6 +14,47 @@ import { ActionSellShare } from './actions/ActionSellShare';
 import { ActionEndRound } from './actions/ActionEndRound';
 import RectangularPieChart from './GameChart';
 import { UserStats } from './UserStats';
+import { START_BLOCK, publicClient } from '../wagmi';
+import { colorClashContractConfig } from './contracts';
+import { arbitrumGoerli } from 'viem/chains';
+import { useAppDispatch, useAppSelector } from '../store';
+import { setEvents, setLastFetchedBlock } from '../store/events';
+
+
+const fetchEvents = async (blockNumber: number = 0) => {
+  console.log("fetching events from block", blockNumber);
+
+
+  let greatestBlockNumber = 0;
+    
+  const events = (await publicClient({chainId: arbitrumGoerli.id
+    }).getLogs({
+      fromBlock: START_BLOCK,
+      address: colorClashContractConfig.address,
+  
+    })).map(log => {
+      const decodedLog = decodeEventLog({
+        abi: colorClashContractConfig.abi,
+        topics: log.topics,
+        data: log.data,
+      })
+      // Update the greatest block number
+    greatestBlockNumber = Math.max(Number(greatestBlockNumber), Number(log.blockNumber));
+
+      return {
+        eventId: log.data + log.topics.join('') + log.blockNumber,
+        type: decodedLog.eventName,
+        blockNumber: log.blockNumber,
+        ...decodedLog.args,
+      }
+    })
+
+  console.log("events", events);
+  console.log("greatestBlockNumber", greatestBlockNumber);
+
+  return { events, greatestBlockNumber };
+};
+
 
 function clampNumber(value: number) {
     return Math.min(Math.max(value, 15), 85);
@@ -48,11 +89,16 @@ function clampNumber(value: number) {
 
 
 export const Game = () => {
+  const lastFetchedBlockNumber = useAppSelector((state : any) => state.events.lastFetchedBlock);
+  const events = useAppSelector((state: any) => state.events.events);
+
+  console.log("events main", events);
+  const dispatch = useAppDispatch();
   const { address } = useAccount()
   const  { chain } = useNetwork()
   console.log("current cha  in", chain)
   const { colorSharesBalance } = useUserInfo(address as any)
-  const  { 
+  const {      
     gameEndTime,
     currentRoundNumber,
     round,
@@ -95,6 +141,15 @@ export const Game = () => {
   console.log('redMultiplier', redMultiplier)
   console.log('blueMultiplier', blueMultiplier)
 
+  //fetch events
+  useEffect(() => {
+    fetchEvents(lastFetchedBlockNumber).then(({ events, greatestBlockNumber }) => {
+      console.log("events promise", events);
+      console.log("greatestBlockNumber promise", greatestBlockNumber);
+      dispatch(setEvents(events));
+      dispatch(setLastFetchedBlock(greatestBlockNumber));
+    });
+  }, []);
   
 
   return (

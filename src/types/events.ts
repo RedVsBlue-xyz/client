@@ -6,12 +6,12 @@ export enum EventType {
     RoundStarted = 'RoundStarted',
     RoundColorDeduction = 'RoundColorDeduction',
     RoundEnded = 'RoundEnded',
-    Trade = 'Trade',
+    Trade = "Trade",
 }
 
 export interface BaseEvent {
     type: EventType;
-    timestamp: number;
+    blockNumber: number;
 }
 
 export interface FetchingRandomNumber extends BaseEvent {
@@ -47,4 +47,15 @@ export interface RoundEnded extends BaseEvent {
     reward: number;
 }
 
-export type Event = FetchingRandomNumber | RandomNumberReceived | RoundStarted | RoundColorDeduction | RoundEnded;
+export interface Trade extends BaseEvent {
+    type: EventType.Trade;
+    trader: string;
+    color: ColorTypes;
+    isBuy: boolean;
+    shareAmount: number;
+    ethAmount: number;
+    protocolEthAmount: number;
+    supply: number;
+}
+
+export type Event = FetchingRandomNumber | RandomNumberReceived | RoundStarted | RoundColorDeduction | RoundEnded | Trade | BaseEvent;

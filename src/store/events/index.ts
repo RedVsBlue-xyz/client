@@ -45,22 +45,28 @@ export const fetchEvents = createAsyncThunk(
 // Define the initial state using that type
 interface EventsState {
     lastFetchedBlock: number;
-    events: { [eventId: string]: Event };
+    events: Event[]
 }
 const initialState: EventsState = {
     lastFetchedBlock: 0,
-    events: {},
+    events: [],
 }
 
 export const eventSlice = createSlice({
   name: 'events',
   initialState,
   reducers: {
-    
-  }
+    setEvents: (state, action) => {
+        state.events = action.payload
+    },
+    setLastFetchedBlock: (state, action) => {
+        state.lastFetchedBlock = action.payload
+    }
+  },
+  
 })
 
 // Action creators are generated for each case reducer function
-export const {  } = eventSlice.actions
+export const { setEvents, setLastFetchedBlock  } = eventSlice.actions
 
 export default eventSlice.reducer

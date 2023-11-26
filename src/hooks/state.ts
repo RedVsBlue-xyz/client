@@ -261,17 +261,58 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
     }
   }
 
+  export const getScalingFactor = (supply: number, value: number): number => {
+    const xf = supply > 1 ? supply - 1 : 0;
+    const originalValue = getPrice(1, xf)
 
+    if (value == 0) {
+      return 1;
+    }
 
-export const useGetPriceHistory = (colorType: ColorTypes): DataPoint[] => {
-    return [
-        {x: 0, y: 0},
-        {x: 1, y: 1},
-        {x: 2, y: 2},
-        {x: 3, y: 3},
-        {x: 4, y: 4},
-        {x: 5, y: 5},
-    ]
+    const scalingFactor =  value / originalValue;
+    return scalingFactor == 0 ? 1 : scalingFactor;
+  }
+  export const getPrice = (supply: number, amount: number): number => {
+    let sum1 = supply == 0 ? 0 : (supply - 1) * (supply) * (2 * (supply -1) + 1) / 2;
+    let sum2 = supply == 0 && amount == 1 ? 0 : (supply - 1 + amount) * (supply + amount) * (2 * (supply - 1 + amount) + 1) / 6;
+    return (sum2 - sum1)/ 16000;
+  }
+
+  export const getAdjustedPrice = (supply: number, amount: number, scalingFactor: number): number => {
+    const price = getPrice(supply, amount);
+    return price * scalingFactor;
+  }
+
+export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], blockRange: number[]): DataPoint[] => {
+    let totalValue = 0;
+    let totalSupply = 0;
+
+    return events.reduce((acc:any, event) => {
+        console.log("price event name", event.type)
+        if (event.type == "Trade" && event.color == colorType) {
+            const blockNumber = Number(event.blockNumber);
+            if (event.isBuy) {
+                totalValue += Number(event.ethAmount) / 1e18;
+                totalSupply += Number(event.shareAmount);
+            } else {
+                totalValue -= Number(event.ethAmount) / 1e18;
+                totalSupply -= Number(event.shareAmount);
+            }
+    
+            const scalingFactor = getScalingFactor(totalSupply, totalValue);
+            const price = getAdjustedPrice(totalSupply, totalValue, scalingFactor);
+            
+            console.log("price scaling factor", scalingFactor)
+            console.log("price", price);
+            console.log("price events length", events.length);
+    
+            acc.push({
+                x: blockNumber,
+                y: price ?? 0,
+            });
+        }
+        return acc;
+    }, []);
 }
 
 export const useGetEventHistory = (): Event[] => {
@@ -302,29 +343,17 @@ export const useGetEventHistory = (): Event[] => {
     ]
 }
 
-export const useGetColorEventHistory = (colorType: ColorTypes): Event[] => {
-    return [
-        {
-            type: EventType.RoundStarted,
-            timestamp: 0,
-            round: 0,
-            startTime: 0,
-            endTime: 0,
-        },
-        {
-            type: EventType.RoundColorDeduction,
-            timestamp: 0,
-            roundNumber: 0,
-            color: ColorTypes.Red,
-            deduction: 0,
-        },
-        {
-            type: EventType.RoundEnded,
-            timestamp: 0,
-            roundNumber: 0,
-            status: RoundState.Finished,
-            winner: ColorTypes.Red,
-            reward: 0,
-        },
-    ]
+export const useGetColorEventHistory = (colorType: ColorTypes, events: Event[]): Event[] => {
+    return events.filter((event) => {
+        if (event.type == "Trade" && event.color == colorType) {
+            return true;
+        }
+        if (event.type == "RoundColorDeduction" && event.color == colorType) {
+            return true;
+        }
+        if (event.type == "RoundEnded" && event.winner == colorType) {
+            return true;
+        }
+        return false;
+    }).reverse();
 }
