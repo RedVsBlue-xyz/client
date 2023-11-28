@@ -25,7 +25,7 @@ export interface ColorStats {
     color: ColorTypes;
 }
 
-export const eventToTsx = (event: Event, index: number) => {
+export const eventToTsx = (event: Event | any, index: number) => {
     if(event.type == "Trade"){
         console.log("eventToTsx", event);
         return (

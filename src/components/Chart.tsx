@@ -13,7 +13,7 @@ export function Chart({ colorType, data }: {colorType: ColorTypes, data: DataPoi
 <ResponsiveLine
     data={[{
         id: ColorTypeToString[colorType] ?? "Unknown",
-        color: "rbg(100, 9, 10)",
+        color: "#ff0000",
         data: data
     }]}
     curve='monotoneX'
@@ -48,8 +48,8 @@ export function Chart({ colorType, data }: {colorType: ColorTypes, data: DataPoi
         legendPosition: 'middle'
     }}
     
-    pointSize={7}
-    pointBorderWidth={2}
+    pointSize={10}
+    pointBorderWidth={1}
     pointLabelYOffset={-12}
     useMesh={true}
 />

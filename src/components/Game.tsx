@@ -6,7 +6,7 @@ import { MovesEndRound } from './moves/MovesEndRound';
 
 import { useColors, useColorsPrice, useContributions, useCurrentRoundNumber, useGameEndTime, useGameState, useRound, useTimeTill, useTotalValueDeposited, useUserInfo } from "../hooks/state"
 import { ModalGameResult } from './modals/ModalGameResult';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useContractEvent, useNetwork } from 'wagmi';
 import { MovesClaimRewards } from './moves/MovesClaimRewards';
 import { ColorTypes } from '../types';
 import { ActionBuyShare } from './actions/ActionBuyShare';
@@ -18,7 +18,7 @@ import { START_BLOCK, publicClient } from '../wagmi';
 import { colorClashContractConfig } from './contracts';
 import { arbitrumGoerli } from 'viem/chains';
 import { useAppDispatch, useAppSelector } from '../store';
-import { setEvents, setLastFetchedBlock } from '../store/events';
+import { addEvents, setEvents, setLastFetchedBlock } from '../store/events';
 
 
 const fetchEvents = async (blockNumber: number = 0) => {
@@ -150,6 +150,92 @@ export const Game = () => {
       dispatch(setLastFetchedBlock(greatestBlockNumber));
     });
   }, []);
+
+  //Listen to events
+  useContractEvent({
+    ...colorClashContractConfig,
+    chainId: arbitrumGoerli.id,
+    eventName: "Trade",
+    listener(events) {
+      events.forEach((event) => {
+        console.log("newevent", event);
+        const decodedLog = decodeEventLog({
+          abi: colorClashContractConfig.abi,
+          topics: event.topics,
+          data: event.data,
+        })
+        // Update the greatest block number
+        const blockNumber = Number(event.blockNumber);
+  
+        const decodedEvent = {
+          eventId: event.data + event.topics.join('') + event.blockNumber,
+          type: decodedLog.eventName,
+          blockNumber: event.blockNumber,
+          ...decodedLog.args,
+        }
+
+        dispatch(addEvents([decodedEvent]));
+        dispatch(setLastFetchedBlock(blockNumber));
+        
+      });
+    }
+  })
+  useContractEvent({
+    ...colorClashContractConfig,
+    chainId: arbitrumGoerli.id,
+    eventName: "RoundColorDeduction",
+    listener(events) {
+      events.forEach((event) => {
+        console.log("newevent", event);
+        const decodedLog = decodeEventLog({
+          abi: colorClashContractConfig.abi,
+          topics: event.topics,
+          data: event.data,
+        })
+        // Update the greatest block number
+        const blockNumber = Number(event.blockNumber);
+  
+        const decodedEvent = {
+          eventId: event.data + event.topics.join('') + event.blockNumber,
+          type: decodedLog.eventName,
+          blockNumber: event.blockNumber,
+          ...decodedLog.args,
+        }
+
+        dispatch(addEvents([decodedEvent]));
+        dispatch(setLastFetchedBlock(blockNumber));
+        
+      });
+    }
+  })
+  useContractEvent({
+    ...colorClashContractConfig,
+    chainId: arbitrumGoerli.id,
+    eventName: "RoundEnded",
+    listener(events) {
+      events.forEach((event) => {
+        console.log("newevent", event);
+        const decodedLog = decodeEventLog({
+          abi: colorClashContractConfig.abi,
+          topics: event.topics,
+          data: event.data,
+        })
+        // Update the greatest block number
+        const blockNumber = Number(event.blockNumber);
+  
+        const decodedEvent = {
+          eventId: event.data + event.topics.join('') + event.blockNumber,
+          type: decodedLog.eventName,
+          blockNumber: event.blockNumber,
+          ...decodedLog.args,
+        }
+
+        dispatch(addEvents([decodedEvent]));
+        dispatch(setLastFetchedBlock(blockNumber));
+        
+      });
+    }
+  })
   
 
   return (

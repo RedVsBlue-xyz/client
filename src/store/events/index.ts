@@ -59,6 +59,9 @@ export const eventSlice = createSlice({
     setEvents: (state, action) => {
         state.events = action.payload
     },
+    addEvents: (state, action) => {
+        state.events = state.events.concat(action.payload)
+    },
     setLastFetchedBlock: (state, action) => {
         state.lastFetchedBlock = action.payload
     }
@@ -67,6 +70,6 @@ export const eventSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setEvents, setLastFetchedBlock  } = eventSlice.actions
+export const { setEvents, setLastFetchedBlock, addEvents  } = eventSlice.actions
 
 export default eventSlice.reducer

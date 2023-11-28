@@ -293,7 +293,7 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
     let totalValue = 0;
     let totalSupply = 0;
     return events
-    .reduce((acc:any, event) => {
+    .reduce((acc:any, event:any) => {
         if (event.type == "Trade" && event.color == colorType) {
             const blockNumber = Number(event.blockNumber);
             totalValue = Number(event.value) / 1e18;
@@ -331,7 +331,6 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
         }
         return acc;
     }, [])
-    .sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber))
 
 }
 
@@ -340,21 +339,21 @@ export const useGetEventHistory = (): Event[] => {
         {
 
             type: EventType.RoundStarted,
-            timestamp: 0,
+            blockNumber: 0,
             round: 0,
             startTime: 0,
             endTime: 0,
         },
         {
             type: EventType.RoundColorDeduction,
-            timestamp: 0,
+            blockNumber: 0,
             roundNumber: 0,
             color: ColorTypes.Red,
             deduction: 0,
         },
         {
             type: EventType.RoundEnded,
-            timestamp: 0,
+            blockNumber: 0,
             roundNumber: 0,
             status: RoundState.Finished,
             winner: ColorTypes.Red,
@@ -363,7 +362,7 @@ export const useGetEventHistory = (): Event[] => {
     ]
 }
 
-export const useGetColorEventHistory = (colorType: ColorTypes, events: Event[]): Event[] => {
+export const useGetColorEventHistory = (colorType: ColorTypes, events: Event[] | any[]): Event[] => {
     return events.filter((event) => {
         if (event.type == "Trade" && event.color == colorType) {
             return true;
