@@ -56,6 +56,7 @@ export interface Trade extends BaseEvent {
     ethAmount: number;
     protocolEthAmount: number;
     supply: number;
+    value: number;
 }
 
 export type Event = FetchingRandomNumber | RandomNumberReceived | RoundStarted | RoundColorDeduction | RoundEnded | Trade | BaseEvent;

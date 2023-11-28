@@ -1,78 +1,60 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { DataPoint } from '../types';
+import { ColorTypeToHex, ColorTypeToString, ColorTypes, DataPoint } from '../types';
+import { ResponsiveLine } from '@nivo/line'
 
-export function Chart({ data }: {data: DataPoint[]}) {
+export function Chart({ colorType, data }: {colorType: ColorTypes, data: DataPoint[]}) {
   const ref = useRef();
   const [width, setWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
-    function handleResize() {
-      setWidth(window.innerWidth);
-    }
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const totalWidth = width * 6;
-    const height = 420;
-    const marginTop = 20;
-    const marginRight = 20;
-    const marginBottom = 30;
-    const marginLeft = 30;
-
-    const x = d3.scaleUtc()
-      .domain(d3.extent(data, d => d.x))
-      .range([marginLeft, totalWidth - marginRight]);
-
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.y)]).nice(6)
-      .range([height - marginBottom, marginTop]);
-
-    const area = d3.area()
-      .curve(d3.curveStep)
-      .x(d => x(d.x))
-      .y0(y(0))
-      .y1(d => y(d.y));
-
-    const svg = d3.select(ref.current);
-    svg.selectAll("*").remove(); // Clear previous renders
-
-    const gAxisLeft = svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(y).ticks(6))
-      .call(g => g.select(".domain").remove())
-      .call(g => g.select(".tick:last-of-type text").clone()
-          .attr("x", 3)
-          .attr("text-anchor", "start")
-          .attr("font-weight", "bold")
-          .text("$ Close"));
-
-    const scrollBody = d3.select('.scroll-body');
-    scrollBody.selectAll("*").remove(); // Clear previous renders
-
-    const scrollSvg = scrollBody.append("svg")
-      .attr("width", totalWidth)
-      .attr("height", height)
-      .style("display", "block");
-
-    scrollSvg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).ticks(d3.utcMonth.every(1200 / width)).tickSizeOuter(0));
-
-    scrollSvg.append("path")
-      .datum(data)
-      .attr("fill", "blue")
-      .attr("d", area);
-  }, [data, width]);
 
   return (
-    <div style={{ position: 'relative' }}>
-      <svg ref={ref} width={width} height={420} style={{ position: 'absolute', pointerEvents: 'none', zIndex: 1 }}></svg>
-      <div className='scroll-body' style={{ overflowX: 'scroll', WebkitOverflowScrolling: 'touch' }}></div>
+    <div style={{height:"400px", width:"100%", zIndex:10000000}}>
+<ResponsiveLine
+    data={[{
+        id: ColorTypeToString[colorType] ?? "Unknown",
+        color: "rbg(100, 9, 10)",
+        data: data
+    }]}
+    curve='monotoneX'
+    margin={{ top: 0, right: 110, bottom: 50, left: 60 }}
+    xScale={{ type: 'point' }}
+    yScale={{
+        type: 'linear',
+        min: 'auto',
+        max: 'auto',
+        stacked: true,
+        reverse: false
+    }}
+    yFormat=" >-.2f"
+    axisTop={null}
+    axisRight={null}
+    axisBottom={{
+        tickSize: 1,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: 'Block Number',
+        legendOffset: 36,
+        legendPosition: 'middle'
+    }}
+    enableArea={true}
+    areaOpacity={0.8}
+    axisLeft={{
+        tickSize: 1,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: 'count',
+        legendOffset: -40,
+        legendPosition: 'middle'
+    }}
+    
+    pointSize={7}
+    pointBorderWidth={2}
+    pointLabelYOffset={-12}
+    useMesh={true}
+/>
+
     </div>
-  );
+      );
 }
 

@@ -25,14 +25,13 @@ export interface ColorStats {
     color: ColorTypes;
 }
 
-
 export const eventToTsx = (event: Event, index: number) => {
     if(event.type == "Trade"){
         console.log("eventToTsx", event);
         return (
             <div className='small-p' key={index} style={{display:"flex", flexDirection:"row", justifyContent:"left", gap:"20px", alignContent:"center", alignItems:"center", fontWeight:"bolder"}}>
                 <Address address={event.trader} />
-                {event.isBuy ? "Bought" : "Sold"} 
+                {event.isBuy ? "BOUGHT" : "SOLD"} 
                 &nbsp;
                 {Number(event.shareAmount)} <span className='square' style={{backgroundColor:ColorTypeToHex[event.color]}}></span>
                 for {parseFloat(formatEther(event.ethAmount)).toFixed(4)} ETH
@@ -67,14 +66,14 @@ export function ModalColorStatistics({colorStats, show, onClose}: {colorStats: C
     const colorEvents = useGetColorEventHistory(colorStats.color, events);
     const data = useGetPriceHistory(colorStats.color, events, [100, 100]);
 
-    console.log("data", data);
+    console.log("priceHistory", data)
 
   return (
     <Modal isVisible={show} onClose={() => { onClose() }}>
         <h1 style={{display:"flex", gap:"10px"}}><div className='square' style={{backgroundColor:ColorTypeToHex[colorStats.color], width:"40px", height:"40px"}}></div>{ColorTypeToString[colorStats.color]} </h1>
         <div style={{display:"flex", flexDirection:"column"}}>
             <p>Price history</p>
-            <Chart data={data} />
+            <Chart colorType={colorStats.color} data={data} />
         </div>
         <div style={{display:"flex", justifyContent:"space-between"}}>
             <ActionBuyShare colorType={colorStats.color}/>

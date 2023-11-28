@@ -16,7 +16,7 @@ export function Address({ address = "" }: { address: string }) {
             scale={5} 
             className="identicon" 
         />
-        <p className="small-p">{truncateAddress(address)}</p>
+        <p style={{textDecoration:"underline"}} className="small-p">{truncateAddress(address)}</p>
     </div>
   )
 }

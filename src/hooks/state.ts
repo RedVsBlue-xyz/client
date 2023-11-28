@@ -264,55 +264,75 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
   export const getScalingFactor = (supply: number, value: number): number => {
     const xf = supply > 1 ? supply - 1 : 0;
     const originalValue = getPrice(1, xf)
+    console.log("price original value", originalValue)
 
     if (value == 0) {
       return 1;
     }
 
     const scalingFactor =  value / originalValue;
+    console.log("price value1 scaling factor", scalingFactor, value, originalValue)
     return scalingFactor == 0 ? 1 : scalingFactor;
   }
   export const getPrice = (supply: number, amount: number): number => {
-    let sum1 = supply == 0 ? 0 : (supply - 1) * (supply) * (2 * (supply -1) + 1) / 2;
-    let sum2 = supply == 0 && amount == 1 ? 0 : (supply - 1 + amount) * (supply + amount) * (2 * (supply - 1 + amount) + 1) / 6;
+    let sum1 = supply === 0 ? 0 : (supply - 1) * supply * (2 * (supply - 1) + 1) / 6;
+    let sum2 = supply === 0 && amount === 1 ? 0 : (supply - 1 + amount) * (supply + amount) * (2 * (supply - 1 + amount) + 1) / 6;
     return (sum2 - sum1)/ 16000;
   }
 
   export const getAdjustedPrice = (supply: number, amount: number, scalingFactor: number): number => {
     const price = getPrice(supply, amount);
+    console.log("price before supply", supply);
+    console.log("price before amount", amount);
+    console.log("price before scaling factor", scalingFactor);
+    console.log("price before", price);
     return price * scalingFactor;
   }
 
 export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], blockRange: number[]): DataPoint[] => {
     let totalValue = 0;
     let totalSupply = 0;
-
-    return events.reduce((acc:any, event) => {
-        console.log("price event name", event.type)
+    return events
+    .reduce((acc:any, event) => {
         if (event.type == "Trade" && event.color == colorType) {
             const blockNumber = Number(event.blockNumber);
-            if (event.isBuy) {
-                totalValue += Number(event.ethAmount) / 1e18;
-                totalSupply += Number(event.shareAmount);
-            } else {
-                totalValue -= Number(event.ethAmount) / 1e18;
-                totalSupply -= Number(event.shareAmount);
-            }
+            totalValue = Number(event.value) / 1e18;
+            totalSupply = Number(event.supply);
     
             const scalingFactor = getScalingFactor(totalSupply, totalValue);
-            const price = getAdjustedPrice(totalSupply, totalValue, scalingFactor);
-            
-            console.log("price scaling factor", scalingFactor)
-            console.log("price", price);
-            console.log("price events length", events.length);
+            const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
+            console.log("price value1 supply", totalSupply);
+            console.log("price value1", totalValue);
+            console.log("price value1 scaling factor", scalingFactor)
+            console.log("price value1 price", price);
     
+            acc.push({
+                x: blockNumber,
+                y: price  ?? 0,
+            });
+        } else if (event.type == "RoundColorDeduction" && event.color == colorType) {
+            const blockNumber = Number(event.blockNumber);
+            const scalingFactor = getScalingFactor(totalSupply, Number(event.value)/ 1e18);
+            const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
+
+            acc.push({
+                x: blockNumber,
+                y: price ?? 0,
+            });
+        } else if (event.type == "RoundEnded" && event.winner == colorType) {
+            const blockNumber = Number(event.blockNumber);
+            const scalingFactor = getScalingFactor(totalSupply, Number(event.value)/ 1e18);
+            const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
+
             acc.push({
                 x: blockNumber,
                 y: price ?? 0,
             });
         }
         return acc;
-    }, []);
+    }, [])
+    .sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber))
+
 }
 
 export const useGetEventHistory = (): Event[] => {

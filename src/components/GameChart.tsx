@@ -143,6 +143,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
       </defs>
       {segments.map((segment, index) => (
         <path
+        onClick={()=>{showColorModal(segment.colorType)}}
         key={index}
         d={segment.path}
         fill={ColorTypeToHex[segment.colorType]}
@@ -156,6 +157,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
       </svg>
       {segments.map((segment, index) => (
         <div 
+        onClick={()=>{showColorModal(segment.colorType)}}
         onMouseEnter={() => setHoveredSegmentIndex(index)}
         key={index} style={{
           position: 'absolute', 
