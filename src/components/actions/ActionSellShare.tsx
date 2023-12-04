@@ -16,8 +16,12 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
     args: [Number(colorType), BigInt(amount)],
     value: BigInt(0),
   });
-  const { write } = useContractWrite(config);
-
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    ...colorClashContractConfig,
+    functionName: 'sellShares',
+    args: [Number(colorType), BigInt(amount)],
+    value: BigInt(0),
+  });
   const incrementAmount = () => setAmount(prev => prev + 1);
   const decrementAmount = () => setAmount(prev => Math.max(1, prev - 1));
 
@@ -32,14 +36,16 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
           type="submit"
           onClick={(e) => { e.stopPropagation(); }}
          >
-            {' '}SELL{' '}
+            {' '}{isLoading ? "SELLING..." : "SELL"}{' '}
+            {!isLoading && <>
             <div>{amount}</div>
             <div className='square' style={{backgroundColor:ColorTypeToHexButton[colorType], width:"40px", height:"40px"}}></div>
             <div style={{display:"flex", flexDirection:"column", gap:"-10px"}}>
               <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
               <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
             </div>
-          
+            </> }
+
         </button>
       </form>
       <p className='small-p'>Sell Price:{parseFloat(formatEther(BigInt(price))).toFixed(4)}ETH</p>

@@ -10,13 +10,18 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
   const { price, priceAfterFees } = useColorBuyPrice(colorType, amount);
   const colorName = ColorTypeToString[colorType];
   const colorHex = ColorTypeToHexButton[ColorTypes.Blue];
-  const { config } = usePrepareContractWrite({
+  // const { config } = usePrepareContractWrite({
+  //   ...colorClashContractConfig,
+  //   functionName: 'buyShares',
+  //   args: [Number(colorType), BigInt(amount)],
+  //   value: BigInt(priceAfterFees),
+  // });
+  const { data, isLoading, isSuccess, write } = useContractWrite({
     ...colorClashContractConfig,
     functionName: 'buyShares',
     args: [Number(colorType), BigInt(amount)],
     value: BigInt(priceAfterFees),
-  });
-  const { write } = useContractWrite(config);
+  })
 
   const incrementAmount = () => setAmount(prev => prev + 1);
   const decrementAmount = () => setAmount(prev => Math.max(1, prev - 1));
@@ -31,14 +36,18 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
             className='button big-button'
          type="submit"
          onClick={(e) => { e.stopPropagation(); }}
+         disabled={isLoading}
          >
-            {' '}BUY{' '}
-            <div >{amount}</div>
+            {' '}{isLoading ? "BUYING..." : "BUY"}{' '}
+            {!isLoading && <>
+              <div >{amount}</div>
             <div className='square' style={{backgroundColor:ColorTypeToHex[colorType], width:"40px", height:"40px"}}></div>
             <div style={{display:"flex", flexDirection:"column", gap:"-10px"}}>
                 <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
                 <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
             </div>
+            </> }
+            
           
         </button>
       </form>
