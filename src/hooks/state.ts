@@ -294,6 +294,9 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
     let totalSupply = 0;
     return events
     .reduce((acc:any, event:any) => {
+        if(!event) {
+            return acc;
+        }
         if (event.type == "Trade" && event.color == colorType) {
             const blockNumber = Number(event.blockNumber);
             totalValue = Number(event.value) / 1e18;
@@ -364,6 +367,9 @@ export const useGetEventHistory = (): Event[] => {
 
 export const useGetColorEventHistory = (colorType: ColorTypes, events: Event[] | any[]): Event[] => {
     return events.filter((event) => {
+        if(!event) {
+            return false;
+        }
         if (event.type == "Trade" && event.color == colorType) {
             return true;
         }

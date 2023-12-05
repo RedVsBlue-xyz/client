@@ -31,7 +31,7 @@ export const ColorTypeToHexButton = {
     [ColorTypes.None]: '#FFFFFF',
 }
   
-export const ColorTypeToString = {
+export const ColorTypeToString: any = {
     [ColorTypes.Red]: 'Red',
     [ColorTypes.Orange]: 'Orange',
     [ColorTypes.Yellow]: 'Yellow',

@@ -27,29 +27,54 @@ const fetchEvents = async (blockNumber: number = 0) => {
 
   let greatestBlockNumber = 0;
     
-  const events = (await publicClient({chainId: arbitrumGoerli.id
-    }).getLogs({
+  const events = await (async () => {
+    // Fetch logs
+    const logs = await publicClient({chainId: arbitrumGoerli.id}).getLogs({
       fromBlock: START_BLOCK,
       address: colorClashContractConfig.address,
+    });
   
-    })).map(log => {
-      const decodedLog = decodeEventLog({
+    // Decode logs
+    const decodedLogs = logs.map(log => {
+      const decodedLog: any = decodeEventLog({
         abi: colorClashContractConfig.abi,
         topics: log.topics,
         data: log.data,
-      })
-      // Update the greatest block number
-    greatestBlockNumber = Math.max(Number(greatestBlockNumber), Number(log.blockNumber));
-
+      });
+  
+      greatestBlockNumber = Math.max(Number(greatestBlockNumber), Number(log.blockNumber));
+  
       return {
         eventId: log.data + log.topics.join('') + log.blockNumber,
         type: decodedLog.eventName,
         blockNumber: log.blockNumber,
+        blockHash: log.blockHash,
         ...decodedLog.args,
-      }
-    })
+      };
+    });
+  
+    // const eventsWithBlockDetails = await Promise.all(decodedLogs.map(async (event) => {
+    //   try {
+    //     // Attempt to fetch block details
+    //     const block = await publicClient({chainId: arbitrumGoerli.id}).getBlock({ blockHash: event.blockHash });
+    
+    //     return {
+    //       ...event,
+    //       timestamp: block.timestamp,
+    //     };
+    //   } catch (error) {
+    //     // Handle error (e.g., log it, return a default value, etc.)
+    //     console.error('Error fetching block details:', error);
+    //     // Decide on how to handle the error. For example, return null or a default object
+    //     return event; // or some default object if necessary
+    //   }
+    //   return event;
+    // }));
+  
+    return decodedLogs;
+  })();
 
-  console.log("events", events);
+  console.log("events abc", events);
   console.log("greatestBlockNumber", greatestBlockNumber);
 
   return { events, greatestBlockNumber };
