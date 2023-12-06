@@ -48,17 +48,22 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
 
 
   useEffect(() => {
-    let intervalId: any;
+    let animationFrameId:any;
+
+    const animateRotation = () => {
+      if (isBattling) {
+        setRotationAngle(prevAngle => (prevAngle + 1) % 360);
+        animationFrameId = requestAnimationFrame(animateRotation);
+      }
+    };
 
     if (isBattling) {
-      intervalId = setInterval(() => {
-        setRotationAngle(prevAngle => (prevAngle + 10) % 360);
-      }, 50); // Update every 50 milliseconds for smooth rotation
+      animateRotation();
     }
 
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
     };
   }, [isBattling]);
@@ -140,7 +145,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
         colorType: colorType as any,
       };
     });
-  }, [colors, debouncedDimensions, hoveredSegmentIndex, total, rotationAngle]);
+  }, [colors, debouncedDimensions, hoveredSegmentIndex, total,rotationAngle]);
 
   const showColorModal = (colorType: ColorTypes) => {
     setColorType(colorType);
