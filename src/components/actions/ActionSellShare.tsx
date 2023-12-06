@@ -49,10 +49,10 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
         </button>
       </form>
       <div className='trade-info'>
-      <p className='small-p'>Sell Price:{parseFloat(formatEther(BigInt(price))).toFixed(4)}ETH</p>
-      <p className='small-p'>Fees:{parseFloat(formatEther(BigInt(price - priceAfterFees))).toFixed(4)}ETH</p>
-      <p className='small-p'>Total:{parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)}ETH</p>
-              </div>
-       </div>
+        <p className='small-p'>Sell Price:{parseFloat(formatEther(BigInt(price))).toFixed(4)}ETH</p>
+        <p className='small-p'>Fees:{parseFloat(formatEther(BigInt(price - priceAfterFees))).toFixed(4)}ETH</p>
+        <p className='small-p'>Total:{parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)}ETH</p>
+      </div>
+    </div>
   );
 }

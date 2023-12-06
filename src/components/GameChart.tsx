@@ -12,6 +12,7 @@ type RectangularPieChartProps = {
   colors: { [key in ColorTypes]: Color };
   colorsPrice: { [key in ColorTypes]: number };
   timeLeft: string;
+  winner: ColorTypes;
 };
 
 type SegmentInfo = {
@@ -22,12 +23,20 @@ type SegmentInfo = {
   colorType: ColorTypes;
 };
 
-const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, timeLeft }) => {
+const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, timeLeft, winner }) => {
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null);
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
   const debouncedDimensions = useDebounce(dimensions, 300);
   const [colorType, setColorType] = useState<ColorTypes>(ColorTypes.Blue);
   const [show, setShow] = useState(false);
+  const [rotationAngle, setRotationAngle] = useState(0);
+
+  const isBattling = useMemo(() => {
+    console.log("timeLeft", timeLeft);
+    return timeLeft == "0:00" || timeLeft.includes("0:00")
+  },[timeLeft]);
+
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,6 +46,23 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+
+  useEffect(() => {
+    let intervalId: any;
+
+    if (isBattling) {
+      intervalId = setInterval(() => {
+        setRotationAngle(prevAngle => (prevAngle + 10) % 360);
+      }, 50); // Update every 50 milliseconds for smooth rotation
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isBattling]);
+
   const total = useMemo(() => Object.values(colors).reduce((acc, color) => acc + color.value, 0), [colors]);
 
   const calculateSegment = (startAngle:any, endAngle:any, { width, height }:{width:any, height:any}, isHovered:any) => {
@@ -44,6 +70,10 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
       startAngle -= EXPANSION_DEGREE;
       endAngle += EXPANSION_DEGREE;
     }
+
+    // Adjust angles for rotation
+    startAngle += rotationAngle;
+    endAngle += rotationAngle;
 
     const centerX = width / 2;
     const centerY = height / 2;
@@ -110,7 +140,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
         colorType: colorType as any,
       };
     });
-  }, [colors, debouncedDimensions, hoveredSegmentIndex, total]);
+  }, [colors, debouncedDimensions, hoveredSegmentIndex, total, rotationAngle]);
 
   const showColorModal = (colorType: ColorTypes) => {
     setColorType(colorType);
@@ -156,8 +186,15 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
         </div>
       ))}
       <div className='timer'>
-        <div style={{ textAlign: "center" }}>Next <br></br> clash in:</div>
-        <h1>{timeLeft}</h1>
+        {!isBattling && <>
+          <div style={{ textAlign: "center" }}>Next <br></br> clash in:</div>
+          <h1>{timeLeft}</h1>
+        </>}
+        {isBattling && <>
+          <div style={{ textAlign: "center" }}>Colors are Clashing!</div>
+          <div className='lds-ring'><div></div><div></div><div></div><div></div></div>
+        </>}
+        
         <Connect />
       </div>  
     </div>
