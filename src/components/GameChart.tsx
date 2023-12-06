@@ -47,24 +47,19 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
 
 
   useEffect(() => {
-    let animationFrameId:any;
-
-    const animateRotation = () => {
-      if (isBattling) {
-        setRotationAngle(prevAngle => (prevAngle + 1) % 360);
-        animationFrameId = requestAnimationFrame(animateRotation);
-      }
-    };
+    let intervalId:any;
 
     if (isBattling) {
-      animateRotation();
+        intervalId = setInterval(() => {
+          setRotationAngle(prevAngle => (prevAngle + 10) % 360);
+        }, 50); // Update every 50 milliseconds for smooth rotation
     }else {
       setRotationAngle(0);
     }
 
     return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
   }, [isBattling]);
