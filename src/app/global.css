@@ -154,6 +154,7 @@ a {
 }
 
 .stats {
+  padding-top: 15px !important;
   position: absolute;
   height: 70px;
   width: 100%;
@@ -202,7 +203,7 @@ a {
 }
 
 .modal {
-  width: 40%;
+  max-width: 900px;
   position: fixed;
   top: 45%;
   left: 50%;
@@ -257,6 +258,141 @@ a {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.trade-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 100%;
+}
+
+@media only screen and (max-width: 800px) {
+
+  .stats{
+    width: 100%;
+    height: fit-content;
+    gap: 20px;
+    padding: 10px 10px;
+  }
+
+  .trade-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    gap: 5px;
+  }
+
+  /* .square {
+    height: 10px;
+    width: 10px;
+    border-radius: 2px;
+  } */
+
+  .button {
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .big-button {
+    padding: 1px 10px;
+    font-size: 30px;
+    width: 100%;
+    height: 90px;
+    margin: 20px 0;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 1px;
+  }
+  .timer {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-weight: bolder;
+    background-color: var(--grey-bg);
+    transition: left 0.5s ease;
+    border-radius: 60%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    left: 50%;
+    height: 70px;
+    width: 70px;
+    padding: 30px;
+    background-color: white;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin: 0;
+    word-spacing: 0.1px;
+    
+  }
+
+  .small-p {
+    font-size: 0.5rem;
+    word-spacing: 0.05px;
+    letter-spacing: 0.05px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .smaller-p {
+    font-size: 0.3rem;
+    word-spacing: 0.5px;
+    letter-spacing: 0.05px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  p {
+
+    font-size: 0.6rem;
+    font-weight: bolder;
+    word-spacing: 0.05px;
+    letter-spacing: 0.05px;
+  }
+
+  .modal {
+    top: 45%;
+    width: 80%;
+    left: 48%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    z-index: 100000;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 10px 80px rgba(0, 0, 0, 0.568);
+    border-radius: 10px;
+    max-height: 70%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
   }
 }
   

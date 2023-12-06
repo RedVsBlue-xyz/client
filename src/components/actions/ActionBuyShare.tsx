@@ -27,7 +27,7 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
   const decrementAmount = () => setAmount(prev => Math.max(1, prev - 1));
 
   return (
-    <div>
+    <div style={{width:"100%"}}>
       <form onSubmit={(e) => {
         e.preventDefault();
         write?.();
@@ -51,9 +51,11 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
           
         </button>
       </form>
-      <p className='small-p'>Buy Price: {parseFloat(formatEther(BigInt(price))).toFixed(4)} ETH</p>
-      <p className='small-p'>Fees: {parseFloat(formatEther(BigInt(priceAfterFees - price))).toFixed(4)} ETH</p>
-      <p className='small-p'>Total: {parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)} ETH</p>
+      <div className='trade-info'>
+        <p className='small-p'>Buy Price:{parseFloat(formatEther(BigInt(price))).toFixed(4)}ETH</p>
+        <p className='small-p'>Fees:{parseFloat(formatEther(BigInt(priceAfterFees - price))).toFixed(4)}ETH</p>
+        <p className='small-p'>Total:{parseFloat(formatEther(BigInt(priceAfterFees))).toFixed(4)}ETH</p>
+      </div>
     </div>
   );
 }

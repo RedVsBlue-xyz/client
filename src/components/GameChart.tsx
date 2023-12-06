@@ -6,7 +6,7 @@ import { ModalColorStatistics } from './modals/ModalColorStatistics';
 import { Connect } from './Connect';
 
 const EXPANSION_DEGREE = 2; // Degree by which a segment expands on hover
-const MIN_DEGREE_PER_SEGMENT = 10; // Minimum degree for a segment
+const MIN_DEGREE_PER_SEGMENT = 25; // Minimum degree for a segment
 
 type RectangularPieChartProps = {
   colors: { [key in ColorTypes]: Color };
@@ -64,10 +64,21 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
     const middleAngle = (startAngle + endAngle) / 2;
     const middleRadians = (Math.PI / 180) * middleAngle;
     const angleSize = endAngle - startAngle;
-    const distanceFromCenter = 250 + radius / (angleSize ** 1.2);
+    const distanceFromCenter = Math.min(250, width / 2, height / 2) + radius / (angleSize ** 1.2);
 
-    const textX = centerX + distanceFromCenter * Math.cos(middleRadians);
-    const textY = centerY + distanceFromCenter * Math.sin(middleRadians);
+    let textX = centerX + distanceFromCenter * Math.cos(middleRadians);
+    let textY = centerY + distanceFromCenter * Math.sin(middleRadians);
+
+    const minDistanceFromCenter = Math.min(distanceFromCenter, width / 2, height / 2);
+    if (Math.sqrt(Math.pow(textX - centerX, 2) + Math.pow(textY - centerY, 2)) > minDistanceFromCenter) {
+      textX = centerX + minDistanceFromCenter * Math.cos(middleRadians);
+      textY = centerY + minDistanceFromCenter * Math.sin(middleRadians);
+    }
+
+    return { path, textX, textY };
+    // Ensure text position stays within the window bounds
+    // textX = Math.max(100, Math.min(textX, width-100));
+    // textY = Math.max(100, Math.min(textY, height-100));
 
     return { path, textX, textY };
   };
@@ -118,7 +129,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
             fill={ColorTypeToHex[segment.colorType]}
             onMouseEnter={() => setHoveredSegmentIndex(index)}
             onMouseLeave={() => setHoveredSegmentIndex(null)}
-            style={{ transition: 'd 0.3s ease' }}
+            style={{ transition: 'd 0.3s ease', cursor: 'pointer' }}
           />
         ))}
       </svg>
@@ -128,6 +139,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
           onMouseEnter={() => setHoveredSegmentIndex(index)}
           key={index}
           style={{
+            cursor: 'pointer',
             position: 'absolute', 
             left: segment.textX, 
             top: segment.textY,

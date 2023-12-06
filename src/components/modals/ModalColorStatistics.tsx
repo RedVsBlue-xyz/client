@@ -75,12 +75,12 @@ export function ModalColorStatistics({colorStats, show, onClose}: {colorStats: C
             <p>Price history</p>
             <Chart colorType={colorStats.color} data={data} />
         </div>
-        <div style={{display:"flex", justifyContent:"space-between"}}>
+        <div className='button-container'>
             <ActionBuyShare colorType={colorStats.color}/>
             <ActionSellShare colorType={colorStats.color}/>
         </div>
-        <div style={{display:"flex", flexDirection:"column"}}>
-            <p>Events</p>
+        <div style={{display:"flex", flexDirection:"column", marginTop:"50px"}}>
+            <p style={{marginBottom:"20px"}}>Events</p>
             <div style={{display:"flex", flexDirection:"column", gap:"15px"}}>
                 {colorEvents.map((event, index) =>  eventToTsx(event, index))}
             </div>

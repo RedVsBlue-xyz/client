@@ -10,16 +10,16 @@ export function UserStats({ userInfo }: { userInfo: UserInfo }) {
     //Create an array of <p> elements for each user.colorSharesBalance:{[colorTypes: number]: number},
     const colorSharesBalance = Object.entries(userInfo.colorSharesBalance).map(([key, value]) => {
         return (
-            <p key={key} className="small-p">
+            <p key={key} className="small-p" style={{margin:"1px"}}>
                 <div style={{backgroundColor:ColorTypeToHex[key]}} className="square"></div>x{value}
                 </p>
         )
     })
   return (
     <div className="stats">
-        <div style={{display:"flex", flexDirection:"column", justifyContent:"space-evenly"}}>
+        <div style={{display:"flex", flexDirection:"column", justifyContent:"start", gap:"7px"}}>
             <p style={{textDecoration:"underline"}} className="small-p">Address</p>
-            <div style={{display:"flex", flexDirection:"row", gap:"2px"}}>
+            <div style={{display:"flex", flexDirection:"row", gap:"0px"}}>
             <Blockies
                 seed={userInfo.address} 
                 size={5} 
@@ -29,12 +29,12 @@ export function UserStats({ userInfo }: { userInfo: UserInfo }) {
                 <p className="small-p">{truncateAddress(userInfo.address)}</p>
             </div>
         </div>
-        <div style={{display:"flex", flexDirection:"column", justifyContent:"space-evenly"}}>
-            <p style={{textDecoration:"underline"}} className="small-p">Your Balance</p>
-            <div style={{display:"flex", flexDirection:"row", gap:"10px"}}>
-            {colorSharesBalance}
-            </div>
-        </div>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "start", gap: "7px" }}>
+    <p style={{ textDecoration: "underline" }} className="small-p">Your Balance</p>
+    <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+        {colorSharesBalance}
+    </div>
+</div>
     </div>
   )
 }

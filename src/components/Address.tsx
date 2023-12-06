@@ -12,7 +12,7 @@ export function Address({ address = "" }: { address: string }) {
         <Blockies
             seed={address} 
             size={5} 
-            scale={5} 
+            scale={4} 
             className="identicon" 
         />
         <p style={{textDecoration:"underline"}} className="small-p">{truncateAddress(address)}</p>
