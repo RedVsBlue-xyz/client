@@ -12,7 +12,6 @@ type RectangularPieChartProps = {
   colors: { [key in ColorTypes]: Color };
   colorsPrice: { [key in ColorTypes]: number };
   timeLeft: string;
-  winner: ColorTypes;
 };
 
 type SegmentInfo = {
@@ -23,7 +22,7 @@ type SegmentInfo = {
   colorType: ColorTypes;
 };
 
-const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, timeLeft, winner }) => {
+const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, timeLeft }) => {
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null);
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
   const debouncedDimensions = useDebounce(dimensions, 300);
@@ -59,6 +58,8 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
 
     if (isBattling) {
       animateRotation();
+    }else {
+      setRotationAngle(0);
     }
 
     return () => {
