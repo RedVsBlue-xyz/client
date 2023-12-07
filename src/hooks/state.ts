@@ -421,7 +421,7 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
         }
         
     })
-    }, [events])
+    }, [events, address])
 
     return pnl;
 }
