@@ -61,7 +61,7 @@ async function test(){
       ...decodedLog.args,
     }
   })
-  console.log("events", events)
+  //console.log("events", events)
 }
 
 

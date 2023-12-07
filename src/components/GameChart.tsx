@@ -31,7 +31,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
   const [rotationAngle, setRotationAngle] = useState(0);
 
   const isBattling = useMemo(() => {
-    console.log("timeLeft", timeLeft);
+    //console.log("timeLeft", timeLeft);
     return timeLeft == "0:00" || timeLeft.includes("0:00")
   },[timeLeft]);
 

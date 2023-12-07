@@ -31,7 +31,7 @@ export const fetchEvents = createAsyncThunk(
         ...decodedLog.args,
       }
     })
-    console.log("events", events)
+    //console.log("events", events)
 
 
     return events

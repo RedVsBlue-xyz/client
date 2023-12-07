@@ -22,7 +22,7 @@ import { addEvents, setEvents, setLastFetchedBlock } from '../store/events';
 
 
 const fetchEvents = async (blockNumber: number = 0) => {
-  console.log("fetching events from block", blockNumber);
+  //console.log("fetching events from block", blockNumber);
 
 
   let greatestBlockNumber = 0;
@@ -74,8 +74,8 @@ const fetchEvents = async (blockNumber: number = 0) => {
     return decodedLogs;
   })();
 
-  console.log("events abc", events);
-  console.log("greatestBlockNumber", greatestBlockNumber);
+  //console.log("events abc", events);
+  //console.log("greatestBlockNumber", greatestBlockNumber);
 
   return { events, greatestBlockNumber };
 };
@@ -117,11 +117,11 @@ export const Game = () => {
   const lastFetchedBlockNumber = useAppSelector((state : any) => state.events.lastFetchedBlock);
   const events = useAppSelector((state: any) => state.events.events);
 
-  console.log("events main", events);
+  //console.log("events main", events);
   const dispatch = useAppDispatch();
   const { address } = useAccount()
   const  { chain } = useNetwork()
-  console.log("current cha  in", chain)
+  //console.log("current cha  in", chain)
   const { colorSharesBalance } = useUserInfo(address as any)
   const {      
     gameEndTime,
@@ -133,13 +133,13 @@ export const Game = () => {
   } = useGameState()
 
   const userInfo = useUserInfo(address as any)
-  console.log("userInfo", userInfo)
-  console.log("gameEndTime", gameEndTime)
-  console.log("currentRoundNumber", currentRoundNumber)
-  console.log("round", round)
-  console.log("totalValueDeposited", totalValueDeposited)
-  console.log("colors found", colors)
-  console.log("colorsPrice", colorsPrice)
+  //console.log("userInfo", userInfo)
+  //console.log("gameEndTime", gameEndTime)
+  //console.log("currentRoundNumber", currentRoundNumber)
+  //console.log("round", round)
+  //console.log("totalValueDeposited", totalValueDeposited)
+  //console.log("colors found", colors)
+  //console.log("colorsPrice", colorsPrice)
   const { 
     supply: redSupply = 0,
     value: redValue = 0,
@@ -163,14 +163,14 @@ export const Game = () => {
   const blueMultiplier = blueValue > 0 ? total / blueValue : 0;
   const redPriceIfWin = redPrice * redMultiplier;
   const bluePriceIfWin = bluePrice * blueMultiplier;
-  console.log('redMultiplier', redMultiplier)
-  console.log('blueMultiplier', blueMultiplier)
+  //console.log('redMultiplier', redMultiplier)
+  //console.log('blueMultiplier', blueMultiplier)
 
   //fetch events
   useEffect(() => {
     fetchEvents(lastFetchedBlockNumber).then(({ events, greatestBlockNumber }) => {
-      console.log("events promise", events);
-      console.log("greatestBlockNumber promise", greatestBlockNumber);
+      //console.log("events promise", events);
+      //console.log("greatestBlockNumber promise", greatestBlockNumber);
       dispatch(setEvents(events));
       dispatch(setLastFetchedBlock(greatestBlockNumber));
     });
@@ -183,7 +183,7 @@ export const Game = () => {
     eventName: "Trade",
     listener(events) {
       events.forEach((event) => {
-        console.log("newevent", event);
+        //console.log("newevent", event);
         const decodedLog = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,
@@ -211,7 +211,7 @@ export const Game = () => {
     eventName: "RoundColorDeduction",
     listener(events) {
       events.forEach((event) => {
-        console.log("newevent", event);
+        //console.log("newevent", event);
         const decodedLog = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,
@@ -239,7 +239,7 @@ export const Game = () => {
     eventName: "RoundEnded",
     listener(events) {
       events.forEach((event) => {
-        console.log("newevent", event);
+        //console.log("newevent", event);
         const decodedLog = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,

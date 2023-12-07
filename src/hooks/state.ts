@@ -7,11 +7,14 @@ import {
     ColorsList,
     DataPoint,
     RoundState,
+    PnL,
+    DefaultPnLList,
 } from "../types";
 import { Event, EventType } from "../types/events";
 import { useAccount, useContractReads } from 'wagmi'
 import { colorClashContractConfig, redVsBlueContractConfig } from "../components/contracts";
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
+import { color } from "d3";
 
 export const useGameState = (): State => {
     const gameEndTime = useGameEndTime()
@@ -74,7 +77,7 @@ export const useCurrentRoundNumber = (): number => {
         }],
         watch: true,
     })
-    console.log("currentRoundNumber", data)
+    //console.log("currentRoundNumber", data)
     return Number(data?.[0].result ?? 0)
 }
 
@@ -86,7 +89,7 @@ export const useTotalValueDeposited = (): number => {
         }],
         watch: true,
     })
-    console.log("Total value deposited", data?.[0].result)
+    //console.log("Total value deposited", data?.[0].result)
     return Number(data?.[0].result ?? 0)
 }
 
@@ -115,7 +118,7 @@ export const useRound = (): Round => {
 }
 
 export const useColors = (): {[colorTypes: number]: Color} => {
-    console.log(ColorTypes)
+    //console.log(ColorTypes)
     const contracts = useMemo(() => {
         return ColorsList.map((colorType) => ({
             ...colorClashContractConfig,
@@ -128,16 +131,16 @@ export const useColors = (): {[colorTypes: number]: Color} => {
         contracts,
         watch: true,
     })
-    console.log("Colors hoping to find", data)
+    //console.log("Colors hoping to find", data)
     let colors:{[colorTypes: number]: Color} = {}
     ColorsList.forEach((colorType: string | ColorTypes) => {
         const result = data?.[colorType as ColorTypes]?.result as bigint[] ?? [0, 0]
-        console.log("result", result)
+        //console.log("result", result)
         const value = Number(result[0] ?? 0)
         const supply = Number(result[1] ?? 0)
         colors[colorType as ColorTypes] = { value, supply }
     });
-    console.log("result colors", colors)
+    //console.log("result colors", colors)
         
 
     return colors;
@@ -156,7 +159,7 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
         contracts,
         watch: true,
     })
-    console.log("Colors price hoping to find", data)
+    //console.log("Colors price hoping to find", data)
     let colorsPrice:  {[colorTypes: number]: number} = {}
     ColorsList.forEach((colorType: string | ColorTypes) => {
         const result = data?.[colorType as ColorTypes]?.result as bigint || undefined;
@@ -253,7 +256,7 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
       watch: true,
     })
   
-    console.log('data', data)
+    //console.log('data', data)
   
     return {
       redContributions: data?.[0].result ?? BigInt(0),
@@ -264,14 +267,14 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
   export const getScalingFactor = (supply: number, value: number): number => {
     const xf = supply > 1 ? supply - 1 : 0;
     const originalValue = getPrice(1, xf)
-    console.log("price original value", originalValue)
+    //console.log("price original value", originalValue)
 
     if (value == 0) {
       return 1;
     }
 
     const scalingFactor =  value / originalValue;
-    console.log("price value1 scaling factor", scalingFactor, value, originalValue)
+    //console.log("price value1 scaling factor", scalingFactor, value, originalValue)
     return scalingFactor == 0 ? 1 : scalingFactor;
   }
   export const getPrice = (supply: number, amount: number): number => {
@@ -282,10 +285,10 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
 
   export const getAdjustedPrice = (supply: number, amount: number, scalingFactor: number): number => {
     const price = getPrice(supply, amount);
-    console.log("price before supply", supply);
-    console.log("price before amount", amount);
-    console.log("price before scaling factor", scalingFactor);
-    console.log("price before", price);
+    //console.log("price before supply", supply);
+    //console.log("price before amount", amount);
+    //console.log("price before scaling factor", scalingFactor);
+    //console.log("price before", price);
     return price * scalingFactor;
   }
 
@@ -304,10 +307,10 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
     
             const scalingFactor = getScalingFactor(totalSupply, totalValue);
             const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
-            console.log("price value1 supply", totalSupply);
-            console.log("price value1", totalValue);
-            console.log("price value1 scaling factor", scalingFactor)
-            console.log("price value1 price", price);
+            //console.log("price value1 supply", totalSupply);
+            //console.log("price value1", totalValue);
+            //console.log("price value1 scaling factor", scalingFactor)
+            //console.log("price value1 price", price);
     
             acc.push({
                 x: blockNumber,
@@ -335,6 +338,79 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
         return acc;
     }, [])
 
+}
+
+export const useGetPnL = (address: string, events: Event[]): {[colorTypes: number]: PnL} => {
+    const pnl : {[colorTypes: number]: PnL} = DefaultPnLList;
+    useEffect(() => {
+    events.forEach((event:any) => {
+        if(!event) {
+            return;
+        }
+        if (event.type == "Trade"){
+            const colorTraded = event.color;
+            const isBuy = event.isBuy;
+            const colorPnl = pnl[colorTraded];
+            const value = Number(event.value) / 1e18;
+
+            if(event.trader.toLowerCase() == address.toLowerCase()){
+                if (isBuy) {
+                    colorPnl.shareAmount += Number(event.shareAmount);
+                    colorPnl.initialInvestmentValue += value;
+                } else {
+                    colorPnl.shareAmount -= Number(event.shareAmount);
+                    colorPnl.initialInvestmentValue -= value;
+                    colorPnl.initialInvestmentValue = Math.max(colorPnl.initialInvestmentValue, 0);
+                }
+
+                console.log("color initial investment value", colorPnl.initialInvestmentValue)
+            }
+
+            //calculate price of shares held
+            const blockNumber = Number(event.blockNumber);
+            const totalValue = Number(event.value) / 1e18;
+            const totalSupply = Number(event.supply);
+    
+            const scalingFactor = getScalingFactor(totalSupply, totalValue);
+            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+
+
+            if (isBuy) {
+                colorPnl.currentInvestmentValue = price;
+                colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+            } else {
+                colorPnl.currentInvestmentValue = price;
+                colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+            }
+            colorPnl.totalSupply = totalSupply;
+            console.log("color current investment value", price)
+
+        }else if (event.type == "RoundColorDeduction"){
+            const colorTraded = event.color;
+            const colorPnl = pnl[colorTraded];
+            const totalValue = Number(event.value) / 1e18;
+            const totalSupply = colorPnl.totalSupply;
+
+            const scalingFactor = getScalingFactor(totalSupply, totalValue);
+            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+
+            colorPnl.currentInvestmentValue = price;
+            colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+        } else if (event.type == "RoundEnded"){
+            const colorTraded = event.winner;
+            const colorPnl = pnl[colorTraded];
+            const totalValue = Number(event.value) / 1e18;
+            const totalSupply = colorPnl.totalSupply;
+            const scalingFactor = getScalingFactor(totalSupply, totalValue);
+            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+
+            colorPnl.currentInvestmentValue = price;
+            colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+        }
+    })
+    }, [events])
+
+    return pnl;
 }
 
 export const useGetEventHistory = (): Event[] => {

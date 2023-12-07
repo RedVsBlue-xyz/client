@@ -97,5 +97,72 @@ export interface DataPoint {
     y: number,
 }
 
+export interface PnL {
+    roi: number,
+    totalSupply: number,
+    shareAmount: number,
+    initialInvestmentValue: number,
+    currentInvestmentValue: number,
+}
+
+export const DefaultPnLList: {[colorTypes: number]: PnL} = {
+    [ColorTypes.Red]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Orange]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Yellow]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Green]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Blue]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Indigo]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.Violet]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+    [ColorTypes.None]: {
+        roi: 0,
+        totalSupply: 0,
+        shareAmount: 0,
+        initialInvestmentValue: 0,
+        currentInvestmentValue: 0,
+    },
+}
+
 
 

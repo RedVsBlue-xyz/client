@@ -27,7 +27,7 @@ export interface ColorStats {
 
 export const eventToTsx = (event: Event | any, index: number) => {
     if(event.type == "Trade"){
-        console.log("eventToTsx", event);
+        //console.log("eventToTsx", event);
         return (
             <div className='small-p' key={index} style={{display:"flex", flexDirection:"row", justifyContent:"left", gap:"20px", alignContent:"center", alignItems:"center", fontWeight:"bolder"}}>
                 <Address address={event.trader} />
@@ -66,7 +66,7 @@ export function ModalColorStatistics({colorStats, show, onClose}: {colorStats: C
     const colorEvents = useGetColorEventHistory(colorStats.color, events);
     const data = useGetPriceHistory(colorStats.color, events, [100, 100]);
 
-    console.log("priceHistory", data)
+    //console.log("priceHistory", data)
 
   return (
     <Modal isVisible={show} onClose={() => { onClose() }}>
