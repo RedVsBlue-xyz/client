@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { eventSlice } from "./events";
-import { load, save } from "redux-localstorage-simple";
+//import { load, save } from "redux-localstorage-simple";
 import { createWrapper } from "next-redux-wrapper";
 import { TypedUseSelectorHook, useDispatch, useSelector, useStore } from "react-redux";
 
@@ -8,12 +8,12 @@ export const makeStore = () => configureStore({
   reducer: {
     events: eventSlice.reducer,
   },
-  preloadedState: load({
-    states: ["events"],
-  }),
-  middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ serializableCheck: false })
-          .concat(save({ states: ["events"], debounce: 100})),
+  // preloadedState: load({
+  //   states: ["events"],
+  // }),
+  // middleware: (getDefaultMiddleware) =>
+  //     getDefaultMiddleware({ serializableCheck: false })
+  //         .concat(save({ states: ["events"], debounce: 100})),
   devTools: true,
 
 });

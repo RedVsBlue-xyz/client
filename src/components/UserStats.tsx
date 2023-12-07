@@ -32,8 +32,8 @@ export function UserStats({ userInfo }: { userInfo: UserInfo }) {
     //Create an array of <p> elements for each user.colorSharesBalance:{[colorTypes: number]: number},
     const colorSharesBalance = Object.entries(userInfo.colorSharesBalance).map(([key, value]) => {
         return (
-            <div style={{display:"flex", flexDirection:"column"}}>
-                <p key={key} className="small-p" style={{margin:"1px"}}>
+            <div key={key} style={{display:"flex", flexDirection:"column"}}>
+                <p className="small-p" style={{margin:"1px"}}>
                     <div style={{backgroundColor:ColorTypeToHex[key]}} className="square"></div>x{value}
                 </p>
                 {genPnLElement(pnl[key])}
