@@ -385,6 +385,10 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
             colorPnl.totalSupply = totalSupply;
             console.log("color current investment value", price)
 
+            if(Number.isNaN(colorPnl.roi) || colorPnl.roi == Infinity) {
+                colorPnl.roi = 0;
+            }
+
         }else if (event.type == "RoundColorDeduction"){
             const colorTraded = event.color;
             const colorPnl = pnl[colorTraded];
@@ -396,6 +400,10 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
 
             colorPnl.currentInvestmentValue = price;
             colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+
+            if(Number.isNaN(colorPnl.roi) || colorPnl.roi == Infinity) {
+                colorPnl.roi = 0;
+            }
         } else if (event.type == "RoundEnded"){
             const colorTraded = event.winner;
             const colorPnl = pnl[colorTraded];
@@ -406,7 +414,12 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
 
             colorPnl.currentInvestmentValue = price;
             colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
+
+            if(Number.isNaN(colorPnl.roi) || colorPnl.roi == Infinity) {
+                colorPnl.roi = 0;
+            }
         }
+        
     })
     }, [events])
 
