@@ -209,7 +209,7 @@ export const usdcContractConfig = {
 } as const
 
 export const colorClashContractConfig = {
-  address: "0x617de23bf0749df185ADC958B4392E328DA0bADB",
+  address: "0xBb8E1424c8F1561ddDDdA71A9dBFb32Aa709783f",
   abi: [
     {
       "inputs": [],
@@ -241,6 +241,12 @@ export const colorClashContractConfig = {
     {
       "anonymous": false,
       "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
         {
           "indexed": false,
           "internalType": "uint256",
@@ -276,6 +282,12 @@ export const colorClashContractConfig = {
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "roundNumber",
           "type": "uint256"
         },
@@ -292,6 +304,12 @@ export const colorClashContractConfig = {
     {
       "anonymous": false,
       "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
         {
           "indexed": false,
           "internalType": "uint256",
@@ -323,6 +341,12 @@ export const colorClashContractConfig = {
     {
       "anonymous": false,
       "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
         {
           "indexed": false,
           "internalType": "uint256",
@@ -363,6 +387,12 @@ export const colorClashContractConfig = {
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "roundNumber",
           "type": "uint256"
         },
@@ -385,6 +415,12 @@ export const colorClashContractConfig = {
     {
       "anonymous": false,
       "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
         {
           "indexed": false,
           "internalType": "address",

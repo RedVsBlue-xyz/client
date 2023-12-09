@@ -20,6 +20,7 @@ import { useGetColorEventHistory, useGetPriceHistory } from '../../hooks/state'
 import { Event } from '../../types/events'
 import { useAppSelector } from '../../store'
 import { Address } from '../Address'
+import { DateView } from '../Date'
 
 export interface ColorStats {
     color: ColorTypes;
@@ -30,6 +31,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
         //console.log("eventToTsx", event);
         return (
             <div className='small-p' key={index} style={{display:"flex", flexDirection:"row", justifyContent:"left", gap:"20px", alignContent:"center", alignItems:"center", fontWeight:"bolder"}}>
+                <DateView seconds={Number(event.timestamp)} /> 
                 <Address address={event.trader} />
                 {event.isBuy ? "BOUGHT" : "SOLD"} 
                 &nbsp;
@@ -40,6 +42,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
     }else if(event.type == "RoundEnded"){
         return (
             <div className='small-p' key={index} style={{display:"flex", flexDirection:"row", justifyContent:"left", gap:"20px", alignContent:"center", alignItems:"center", fontWeight:"bolder"}}>
+                <DateView seconds={Number(event.timestamp)} /> 
                 <span className='square' style={{backgroundColor:ColorTypeToHex[event.winner]}}></span> 
                 WON<span style={{color:"green"}}>{parseFloat(formatEther(event.reward)).toFixed(4)} ETH</span>
                 in round {Number(event.roundNumber )}
@@ -48,6 +51,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
     } else if (event.type == "RoundColorDeduction"){
         return (
             <div className='small-p' key={index} style={{display:"flex", flexDirection:"row", justifyContent:"left", gap:"20px", alignContent:"center", alignItems:"center", fontWeight:"bolder"}}>
+                <DateView seconds={Number(event.timestamp)} /> 
                 <span className='square' style={{backgroundColor:ColorTypeToHex[event.color]}}></span> 
                 LOST <span style={{color:"red"}}>{parseFloat(formatEther(event.deduction)).toFixed(4)} ETH</span>
                 in round {Number(event.roundNumber) }

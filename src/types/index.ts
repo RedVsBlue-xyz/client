@@ -93,8 +93,11 @@ export interface UserInfo {
 }
 
 export interface DataPoint {
-    x: number,
-    y: number,
+    date: Date,
+    Open: number,
+    High: number,
+    Low: number,
+    Close: number,
 }
 
 export interface PnL {

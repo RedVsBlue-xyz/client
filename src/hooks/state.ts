@@ -183,6 +183,9 @@ export const useTimeTill = (endTime: number): string => {
                 const minutes = Math.floor(timeTill / 60);
                 const seconds = timeTill % 60;
 
+                console.log("time till", timeTill)
+                console.log("end time", endTime)
+
                 const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 setTimer(formattedTime);
             }, 1000);
@@ -301,7 +304,7 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
             return acc;
         }
         if (event.type == "Trade" && event.color == colorType) {
-            const blockNumber = Number(event.blockNumber);
+            const timestamp = Number(event.timestamp);
             totalValue = Number(event.value) / 1e18;
             totalSupply = Number(event.supply);
     
@@ -313,26 +316,34 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
             //console.log("price value1 price", price);
     
             acc.push({
-                x: blockNumber,
-                y: price  ?? 0,
+                date: new Date(timestamp * 1000),
+                open: price  ?? 0,
+                high: price  ?? 0,
+                low: price  ?? 0,
+                close: price  ?? 0,
             });
         } else if (event.type == "RoundColorDeduction" && event.color == colorType) {
-            const blockNumber = Number(event.blockNumber);
+            const timestamp = Number(event.timestamp);
             const scalingFactor = getScalingFactor(totalSupply, Number(event.value)/ 1e18);
             const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
 
             acc.push({
-                x: blockNumber,
-                y: price ?? 0,
-            });
+                date: new Date(timestamp * 1000),
+                open: price  ?? 0,
+                high: price  ?? 0,
+                low: price  ?? 0,
+                close: price  ?? 0,            });
         } else if (event.type == "RoundEnded" && event.winner == colorType) {
-            const blockNumber = Number(event.blockNumber);
+            const timestamp = Number(event.timestamp);
             const scalingFactor = getScalingFactor(totalSupply, Number(event.value)/ 1e18);
             const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
 
             acc.push({
-                x: blockNumber,
-                y: price ?? 0,
+                date: new Date(timestamp * 1000),
+                open: price  ?? 0,
+                high: price  ?? 0,
+                low: price  ?? 0,
+                close: price  ?? 0,
             });
         }
         return acc;

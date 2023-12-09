@@ -70,6 +70,7 @@ const fetchEvents = async (blockNumber: number = 0) => {
     //   }
     //   return event;
     // }));
+    //console.log("eventsWithBlockDetails", eventsWithBlockDetails);
   
     return decodedLogs;
   })();
