@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast'
 import { Account } from '../components/Account'
 import { Balance } from '../components/Balance'
 import { BlockNumber } from '../components/BlockNumber'
@@ -21,6 +22,7 @@ import { WriteContractPrepared } from '../components/WriteContractPrepared'
 export default function Page() {
   return (
     <>
+      <Toaster />
       <Game />
       <Connected>
         {/* <hr />

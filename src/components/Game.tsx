@@ -19,6 +19,8 @@ import { colorClashContractConfig } from './contracts';
 import { arbitrumGoerli } from 'viem/chains';
 import { useAppDispatch, useAppSelector } from '../store';
 import { addEvents, setEvents, setLastFetchedBlock } from '../store/events';
+import toast from 'react-hot-toast';
+import { eventToTsx } from './modals/ModalColorStatistics';
 
 
 const fetchEvents = async (blockNumber: number = 0) => {
@@ -201,6 +203,7 @@ export const Game = () => {
         }
 
         dispatch(addEvents([decodedEvent]));
+        toast.success(eventToTsx(decodedEvent, 0));
         dispatch(setLastFetchedBlock(blockNumber));
         
       });
@@ -229,6 +232,7 @@ export const Game = () => {
         }
 
         dispatch(addEvents([decodedEvent]));
+        toast.success(eventToTsx(decodedEvent, 0));
         dispatch(setLastFetchedBlock(blockNumber));
         
       });
@@ -257,6 +261,7 @@ export const Game = () => {
         }
 
         dispatch(addEvents([decodedEvent]));
+        toast.success(eventToTsx(decodedEvent, 0));
         dispatch(setLastFetchedBlock(blockNumber));
         
       });

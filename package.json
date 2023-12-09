@@ -23,6 +23,7 @@
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-identicons": "^1.2.5",
     "react-jazzicon": "^1.0.4",
     "react-modal": "^3.16.1",
