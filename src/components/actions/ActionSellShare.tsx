@@ -39,7 +39,7 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
             {' '}{isLoading ? "SELLING..." : "SELL"}{' '}
             {!isLoading && <>
             <div>{amount}</div>
-            <div className='square' style={{backgroundColor:ColorTypeToHexButton[colorType], width:"40px", height:"40px"}}></div>
+            <div className='big-square' style={{backgroundColor:ColorTypeToHexButton[colorType], width:"40px", height:"40px"}}></div>
             <div style={{display:"flex", flexDirection:"column", gap:"-10px"}}>
               <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); incrementAmount(); }}>&#x25B2;</div>
               <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); decrementAmount(); }}>&#x25BC;</div>
