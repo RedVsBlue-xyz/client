@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useMemo, useState } from 'react';
 import { ColorTypes, ColorTypeToHex, Color, ColorTypeToString } from '../types';
 import { formatEther } from 'viem';

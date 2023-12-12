@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { ColorTypeToHex, ColorTypeToString, ColorTypes, DataPoint } from '../types';
@@ -18,9 +19,18 @@ export function Chart({ colorType, data }: {colorType: ColorTypes, data: DataPoi
             width="100%"
             height="500px"
             chartType="Line"
-            zoomSliderType="Line"
-            overlayBrushes="rgba(130, 13, 0, 0.17)"
-            overlayOutlines="rgba(150, 13, 0, 0.4)"
+            overlayBrushes="Blue"
+            indicatorBrushes="Blue"
+            volumeOutlines="Blue"
+            volumeBrushes="Blue"
+            negativeBrushes="Blue"
+            negativeOutlines="Blue"
+            overlayOutlines="Blue"
+            zoomSliderType="Area"
+            indicatorNegativeBrushes="Blue"
+            yAxisFormatLabel={(s) => s.toFixed(4) + " ETH"}
+            volumeType="Area"
+            thickness={2}
             overlayThickness={1}
             dataSource={data} />
       );
