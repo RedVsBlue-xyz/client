@@ -291,6 +291,7 @@ a {
   flex-direction: column;
   justify-content: start;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 @keyframes rotate {
@@ -314,9 +315,9 @@ a {
   .trade-info {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
 
-    gap: 5px;
+    gap: 10px;
   }
 
   /* .square {
