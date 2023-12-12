@@ -1,4 +1,3 @@
-
 import { Toaster } from 'react-hot-toast'
 import { Account } from '../components/Account'
 import { Balance } from '../components/Balance'
