@@ -22,7 +22,21 @@ import { WriteContractPrepared } from '../components/WriteContractPrepared'
 export default function Page() {
   return (
     <>
-      <Toaster />
+      <Toaster
+        reverseOrder={true}
+        containerStyle={{
+          width: '100%',
+          inset: '0px',
+          marginTop: '5px',
+        }}
+        toastOptions={{
+          duration: 5000,
+          style: {
+            width: '100%',
+            maxWidth: '90%',
+          },
+        }}
+       />
       <Game />
       <Connected>
         {/* <hr />

@@ -155,8 +155,9 @@ a {
 
 .stats {
   padding-top: 15px !important;
+  padding-bottom: 15px !important;
   position: absolute;
-  height: 70px;
+  height: fit-content;
   width: 100%;
   left: 0;
   bottom: 0;
