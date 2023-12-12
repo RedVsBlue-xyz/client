@@ -390,6 +390,25 @@ a {
     align-items: center;
   }
 
+  .timer div {
+    font-size: 0.7rem;
+    font-weight: bolder;
+    word-spacing: 0.05px;
+    letter-spacing: 0.05px;
+  }
+
+  .timer .lds-ring div {
+    width: 24px;
+    height: 24px;
+  }
+
+  .lds-ring {
+    margin: 5px;
+    margin-top: 20px;
+    width: 24px;
+    height: 24px;
+  }
+
   p {
 
     font-size: 0.6rem;
