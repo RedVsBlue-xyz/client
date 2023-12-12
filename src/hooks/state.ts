@@ -13,7 +13,7 @@ import {
 import { Event, EventType } from "../types/events";
 import { useAccount, useContractReads } from 'wagmi'
 import { colorClashContractConfig, redVsBlueContractConfig } from "../components/contracts";
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { color } from "d3";
 
 export const useGameState = (): State => {
@@ -172,32 +172,46 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
 
 export const useTimeTill = (endTime: number): string => {
     const [timer, setTimer] = useState<string>('0:00');
-    const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+    const intervalIdRef = useRef<NodeJS.Timer | null>(null);
 
     useEffect(() => {
-        if (endTime > 0) {
-            const id = setInterval(() => {
-                const now = Date.now();
-                const timeTill = Math.max(endTime - Math.floor(now / 1000), 0);
-                
-                const minutes = Math.floor(timeTill / 60);
-                const seconds = timeTill % 60;
+        // Function to update the timer
+        const updateTimer = () => {
+            const now = Date.now();
+            const timeTill = Math.max(endTime - Math.floor(now / 1000), 0);
+            
+            const minutes = Math.floor(timeTill / 60);
+            const seconds = timeTill % 60;
 
-                console.log("time till", timeTill)
-                console.log("end time", endTime)
+            const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            setTimer(formattedTime);
+        };
 
-                const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                setTimer(formattedTime);
-            }, 1000);
-            setIntervalId(id);
+        // Clear any existing interval
+        if (intervalIdRef.current) {
+            clearInterval(intervalIdRef.current);
         }
+
+        // Set up a new interval if endTime is in the future
+        if (endTime > 0) {
+            updateTimer(); // Update immediately before the interval starts
+            intervalIdRef.current = setInterval(updateTimer, 1000);
+        } else {
+            // If endTime is not in the future, set the timer to "0:00"
+            setTimer('0:00');
+        }
+
+        // Cleanup function to clear the interval when the component unmounts or endTime changes
         return () => {
-            clearInterval(intervalId);
+            if (intervalIdRef.current) {
+                clearInterval(intervalIdRef.current);
+            }
         };
     }, [endTime]);
 
     return timer;
 };
+
 
 
 export const useColorBuyPrice = (colorType: ColorTypes, amount: number): {price: number, priceAfterFees: number} => {

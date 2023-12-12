@@ -16,7 +16,7 @@ import { ColorTypeToHex, ColorTypeToString, ColorTypes } from '../../types'
 import { ActionBuyShare } from '../actions/ActionBuyShare'
 import { ActionSellShare } from '../actions/ActionSellShare'
 import { Chart } from '../Chart'
-import { useGetColorEventHistory, useGetPriceHistory } from '../../hooks/state'
+import { getAdjustedPrice, getScalingFactor, useGetColorEventHistory, useGetPriceHistory } from '../../hooks/state'
 import { Event } from '../../types/events'
 import { useAppSelector } from '../../store'
 import { Address } from '../Address'
@@ -27,6 +27,11 @@ export interface ColorStats {
 }
 
 export const eventToTsx = (event: Event | any, index: number) => {
+    const totalValue = Number(event.value) / 1e18;
+    const totalSupply = Number(event.supply);
+    const scalingFactor = getScalingFactor(totalSupply, totalValue);
+    const price = getAdjustedPrice(totalSupply, 1, scalingFactor);
+    
     if(event.type == "Trade"){
         //console.log("eventToTsx", event);
         return (
@@ -37,6 +42,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
                 &nbsp;
                 {Number(event.shareAmount)} <span className='square' style={{backgroundColor:ColorTypeToHex[event.color]}}></span>
                 for {parseFloat(formatEther(event.ethAmount)).toFixed(4)} ETH
+                {event.isBuy ? <span style={{color:"green"}}> {price} ETH</span> : <span style={{color:"red"}}> {price} ETH</span>}
             </div>
         )
     }else if(event.type == "RoundEnded"){
@@ -46,6 +52,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
                 <span className='square' style={{backgroundColor:ColorTypeToHex[event.winner]}}></span> 
                 WON<span style={{color:"green"}}>{parseFloat(formatEther(event.reward)).toFixed(4)} ETH</span>
                 in round {Number(event.roundNumber )}
+                {event.isBuy ? <span style={{color:"green"}}> {price} ETH</span> : <span style={{color:"red"}}> {price} ETH</span>}
             </div>
         )
     } else if (event.type == "RoundColorDeduction"){
@@ -55,6 +62,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
                 <span className='square' style={{backgroundColor:ColorTypeToHex[event.color]}}></span> 
                 LOST <span style={{color:"red"}}>{parseFloat(formatEther(event.deduction)).toFixed(4)} ETH</span>
                 in round {Number(event.roundNumber) }
+                {event.isBuy ? <span style={{color:"green"}}> {price} ETH</span> : <span style={{color:"red"}}> {price} ETH</span>}
             </div>
         )
     }
