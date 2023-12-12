@@ -153,7 +153,6 @@ export const Game = () => {
   } = colors[ColorTypes.Blue];
   const redBalance = colorSharesBalance[ColorTypes.Red];
   const blueBalance = colorSharesBalance[ColorTypes.Blue];
-  const timer = useTimeTill(gameEndTime);
   const redPrice = colorsPrice[ColorTypes.Red];
   const bluePrice = colorsPrice[ColorTypes.Blue];
   const [redWidth, blueWidth] = calculateWidth(redValue, blueValue);
@@ -303,7 +302,7 @@ export const Game = () => {
     <RectangularPieChart
   colors={colors as any}
   colorsPrice={colorsPrice as any}
-  timeLeft={timer as any}
+  gameEndTime={gameEndTime as any}
 />
         <UserStats userInfo={userInfo} />
     </>

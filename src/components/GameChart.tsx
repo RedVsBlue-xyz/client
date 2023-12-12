@@ -5,6 +5,7 @@ import { formatEther } from 'viem';
 import { useDebounce } from '../hooks/useDebounce';
 import { ModalColorStatistics } from './modals/ModalColorStatistics';
 import { Connect } from './Connect';
+import { useTimeTill } from '../hooks/state';
 
 const EXPANSION_DEGREE = 2; // Degree by which a segment expands on hover
 const MIN_DEGREE_PER_SEGMENT = 25; // Minimum degree for a segment
@@ -12,7 +13,7 @@ const MIN_DEGREE_PER_SEGMENT = 25; // Minimum degree for a segment
 type RectangularPieChartProps = {
   colors: { [key in ColorTypes]: Color };
   colorsPrice: { [key in ColorTypes]: number };
-  timeLeft: string;
+  gameEndTime: number;
 };
 
 type SegmentInfo = {
@@ -23,7 +24,7 @@ type SegmentInfo = {
   colorType: ColorTypes;
 };
 
-const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, timeLeft }) => {
+const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, colorsPrice, gameEndTime }) => {
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState<number | null>(null);
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
   const debouncedDimensions = useDebounce(dimensions, 300);
@@ -31,9 +32,11 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
   const [show, setShow] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
 
+  const timeLeft = useTimeTill(gameEndTime);
+
   const isBattling = useMemo(() => {
     //console.log("timeLeft", timeLeft);
-    return timeLeft == "0:00" || timeLeft.includes("0:00")
+    return timeLeft == "0:00";
   },[timeLeft]);
 
 
