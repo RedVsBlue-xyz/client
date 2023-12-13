@@ -14,14 +14,32 @@ const genPnLElement = (pnl: PnL) => {
     const colorInHex = isNegative ? ColorTypeToHex[ColorTypes.Red] : ColorTypeToHex[ColorTypes.Green];
     const sign = isNegative ? "-" : "+";
     const inPercent = pnl.roi * 100;
+    const currentPrice = pnl.currentInvestmentValue;
+    const initialPrice = pnl.initialInvestmentValue;
 
     return (
-        <p 
-            style={{color:colorInHex}}
-            className="small-p"
-        >
-            {sign}{Math.abs(inPercent).toFixed(2)}%
-        </p>
+        <div style={{display:"flex", flexDirection:"column", gap:"4px"}}>
+            {/* <p 
+                style={{color:colorInHex}}
+                className="small-p"
+            >
+                {Math.abs(initialPrice)} ETH
+            </p>
+            <p 
+                style={{color:colorInHex}}
+                className="small-p"
+            >
+                {Math.abs(currentPrice)} ETH
+            </p> */}
+            <p 
+                style={{color:colorInHex}}
+                className="small-p"
+            >
+                {sign}{Math.abs(inPercent).toFixed(2)}%
+            </p>
+            
+        </div>
+        
     )
 }
 

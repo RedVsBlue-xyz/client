@@ -41,7 +41,7 @@ export const eventToTsx = (event: Event | any, index: number) => {
                 {event.isBuy ? "BOUGHT" : "SOLD"} 
                 &nbsp;
                 {Number(event.shareAmount)} <span className='square' style={{backgroundColor:ColorTypeToHex[event.color]}}></span>
-                for {parseFloat(formatEther(event.ethAmount)).toFixed(4)} ETH
+                for {parseFloat(formatEther(event.ethAmount))} ETH
                 {event.isBuy ? <span style={{color:"green"}}> {price} ETH</span> : <span style={{color:"red"}}> {price} ETH</span>}
             </div>
         )

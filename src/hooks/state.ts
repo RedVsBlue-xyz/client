@@ -366,8 +366,34 @@ export const useGetPriceHistory = (colorType: ColorTypes, events: Event[], block
 }
 
 export const useGetPnL = (address: string, events: Event[]): {[colorTypes: number]: PnL} => {
-    const pnl : {[colorTypes: number]: PnL} = DefaultPnLList;
+    console.log("calling event length", events.length)
+    console.log("calling useGetPnL")
+    const [pnlToReturn, setPnl] = useState<{[colorTypes: number]: PnL}>(Object.assign({}, DefaultPnLList));
+    
     useEffect(() => {
+        let pnl = JSON.parse(JSON.stringify(DefaultPnLList));
+        console.log("initial pnl", DefaultPnLList)
+
+        let localSupplyForColor : {[colorTypes: number]: number} = JSON.parse(JSON.stringify({ 
+            [ColorTypes.Red]: 0,
+            [ColorTypes.Blue]: 0,
+            [ColorTypes.Green]: 0,
+            [ColorTypes.Yellow]: 0,
+            [ColorTypes.Indigo]: 0,
+            [ColorTypes.Orange]: 0,
+            [ColorTypes.Violet]: 0,
+        }))
+        console.log("initial local supply", localSupplyForColor)
+        let localValueForColor : {[colorTypes: number]: number} = JSON.parse(JSON.stringify({
+            [ColorTypes.Red]: 0,
+            [ColorTypes.Blue]: 0,
+            [ColorTypes.Green]: 0,
+            [ColorTypes.Yellow]: 0,
+            [ColorTypes.Indigo]: 0,
+            [ColorTypes.Orange]: 0,
+            [ColorTypes.Violet]: 0,
+        }))
+        console.log("initial local value", localValueForColor)
     events.forEach((event:any) => {
         if(!event) {
             return;
@@ -377,27 +403,40 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
             const isBuy = event.isBuy;
             const colorPnl = pnl[colorTraded];
             const value = Number(event.value) / 1e18;
+            const ethAmount = Number(event.ethAmount) / 1e18;
+            const totalValue = Number(event.value) / 1e18;
+            const totalSupply = Number(event.supply);
 
             if(event.trader.toLowerCase() == address.toLowerCase()){
                 if (isBuy) {
                     colorPnl.shareAmount += Number(event.shareAmount);
-                    colorPnl.initialInvestmentValue += value;
+                    colorPnl.initialInvestmentValue += ethAmount;
+                    console.log("calling eth amount", ethAmount)
+                    console.log("calling new value", value)
+                    localSupplyForColor[colorTraded] = Number(event.supply);
+                    localValueForColor[colorTraded] = Number(event.value) / 1e18;
                 } else {
+                    const scalingFactor = getScalingFactor(localSupplyForColor[colorTraded], localValueForColor[colorTraded]);
+                    const price = getAdjustedPrice(localSupplyForColor[colorTraded]-Number(event.shareAmount), Number(event.shareAmount), scalingFactor);
+
                     colorPnl.shareAmount -= Number(event.shareAmount);
-                    colorPnl.initialInvestmentValue -= value;
-                    colorPnl.initialInvestmentValue = Math.max(colorPnl.initialInvestmentValue, 0);
+                    colorPnl.initialInvestmentValue -= price;
+                    console.log("calling eth amount supply", localSupplyForColor[colorTraded])
+                    console.log("calling eth amount sell", price)
+
+                    localSupplyForColor[colorTraded] -= Number(event.shareAmount);
+                    localValueForColor[colorTraded] -= ethAmount;
                 }
 
-                console.log("color initial investment value", colorPnl.initialInvestmentValue)
+                console.log("calling color initial investment value", colorPnl.initialInvestmentValue)
             }
 
             //calculate price of shares held
             const blockNumber = Number(event.blockNumber);
-            const totalValue = Number(event.value) / 1e18;
-            const totalSupply = Number(event.supply);
+            
     
             const scalingFactor = getScalingFactor(totalSupply, totalValue);
-            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+            const price = getAdjustedPrice(totalSupply-colorPnl.shareAmount, colorPnl.shareAmount, scalingFactor);
 
 
             if (isBuy) {
@@ -421,7 +460,7 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
             const totalSupply = colorPnl.totalSupply;
 
             const scalingFactor = getScalingFactor(totalSupply, totalValue);
-            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+            const price = getAdjustedPrice(totalSupply-colorPnl.shareAmount, colorPnl.shareAmount, scalingFactor);
 
             colorPnl.currentInvestmentValue = price;
             colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
@@ -435,7 +474,7 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
             const totalValue = Number(event.value) / 1e18;
             const totalSupply = colorPnl.totalSupply;
             const scalingFactor = getScalingFactor(totalSupply, totalValue);
-            const price = getAdjustedPrice(totalSupply, colorPnl.shareAmount, scalingFactor);
+            const price = getAdjustedPrice(totalSupply-colorPnl.shareAmount, colorPnl.shareAmount, scalingFactor);
 
             colorPnl.currentInvestmentValue = price;
             colorPnl.roi = (colorPnl.currentInvestmentValue - colorPnl.initialInvestmentValue) / colorPnl.initialInvestmentValue;
@@ -446,9 +485,11 @@ export const useGetPnL = (address: string, events: Event[]): {[colorTypes: numbe
         }
         
     })
+    setPnl(Object.assign({}, pnl));
+    console.log("calling local supply", localSupplyForColor)
     }, [events, address])
 
-    return pnl;
+    return pnlToReturn;
 }
 
 export const useGetEventHistory = (): Event[] => {
