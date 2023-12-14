@@ -209,7 +209,7 @@ export const usdcContractConfig = {
 } as const
 
 export const colorClashContractConfig = {
-  address: "0xBb8E1424c8F1561ddDDdA71A9dBFb32Aa709783f",
+  address: "0x04b7F31fcf5aEd8568C1e3fbfdB5c1F0F370fB88",
   abi: [
     {
       "inputs": [],
@@ -333,6 +333,12 @@ export const colorClashContractConfig = {
           "internalType": "uint256",
           "name": "value",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "supply",
+          "type": "uint256"
         }
       ],
       "name": "RoundColorDeduction",
@@ -375,6 +381,12 @@ export const colorClashContractConfig = {
           "indexed": false,
           "internalType": "uint256",
           "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "supply",
           "type": "uint256"
         }
       ],
