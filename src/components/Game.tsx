@@ -23,6 +23,47 @@ import toast from 'react-hot-toast';
 import { eventToTsx } from './modals/ModalColorStatistics';
 
 
+const publicVapidKey = "BE2H2BPms7pkWMRcOMbY-XOccXwJLVrHHQY h4ESAzN9_yATNdnFV9IrgVSgUtfsQjNjooarGN4YpJnkeULM12PA";
+function urlBase64ToUint8Array(base64String:string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function registerServiceWorker() {
+  console.log("svm registering service worker");
+  const register = await window.navigator.serviceWorker.register('/serviceWorker.js', {
+      scope: '/'
+  });
+
+  const subscription = await register.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+  });
+
+  console.log("svm subscription", subscription);
+
+  const result = await fetch("/subscribe", {
+      method: "POST",
+      body: JSON.stringify(subscription),
+      headers: {
+          "Content-Type": "application/json",
+      }
+  })
+
+  console.log("svm result", result);
+}
+
+
 const fetchEvents = async (blockNumber: number = 0) => {
   //console.log("fetching events from block", blockNumber);
 
@@ -170,6 +211,7 @@ export const Game = () => {
 
   //fetch events
   useEffect(() => {
+    registerServiceWorker();
     fetchEvents(lastFetchedBlockNumber).then(({ events, greatestBlockNumber }) => {
       //console.log("events promise", events);
       //console.log("greatestBlockNumber promise", greatestBlockNumber);

@@ -1,6 +1,7 @@
 import './global.css'
 import { Providers } from './providers'
 import icon from './icon.jpg'
+import Script from 'next/script'
 
 export const metadata = {
   title: 'Colorclash.io',

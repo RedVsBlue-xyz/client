@@ -12,7 +12,7 @@ export function Balance() {
       </div>
       <br />
       <div>
-        <FindBalance />
+        <FindBalance /> 
       </div>
     </>
   )
