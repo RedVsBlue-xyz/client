@@ -2,16 +2,10 @@
 import { decodeEventLog, formatEther, parseEther, parseUnits } from 'viem';
 import React, { useEffect, useState } from 'react';
 
-import { MovesEndRound } from './moves/MovesEndRound';
 
 import { useColors, useColorsPrice, useContributions, useCurrentRoundNumber, useGameEndTime, useGameState, useRound, useTimeTill, useTotalValueDeposited, useUserInfo } from "../hooks/state"
-import { ModalGameResult } from './modals/ModalGameResult';
 import { useAccount, useContractEvent, useNetwork } from 'wagmi';
-import { MovesClaimRewards } from './moves/MovesClaimRewards';
 import { ColorTypes } from '../types';
-import { ActionBuyShare } from './actions/ActionBuyShare';
-import { ActionSellShare } from './actions/ActionSellShare';
-import { ActionEndRound } from './actions/ActionEndRound';
 import RectangularPieChart from './GameChart';
 import { UserStats } from './UserStats';
 import { START_BLOCK, publicClient } from '../wagmi';
@@ -78,7 +72,7 @@ const fetchEvents = async (blockNumber: number = 0) => {
     });
   
     // Decode logs
-    const decodedLogs = logs.map(log => {
+    const decodedLogs:any = logs.map(log => {
       const decodedLog: any = decodeEventLog({
         abi: colorClashContractConfig.abi,
         topics: log.topics,
@@ -228,7 +222,7 @@ export const Game = () => {
     listener(events) {
       events.forEach((event) => {
         //console.log("newevent", event);
-        const decodedLog = decodeEventLog({
+        const decodedLog:any = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,
           data: event.data,
@@ -257,7 +251,7 @@ export const Game = () => {
     listener(events) {
       events.forEach((event) => {
         //console.log("newevent", event);
-        const decodedLog = decodeEventLog({
+        const decodedLog:any = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,
           data: event.data,
@@ -286,7 +280,7 @@ export const Game = () => {
     listener(events) {
       events.forEach((event) => {
         //console.log("newevent", event);
-        const decodedLog = decodeEventLog({
+        const decodedLog:any = decodeEventLog({
           abi: colorClashContractConfig.abi,
           topics: event.topics,
           data: event.data,

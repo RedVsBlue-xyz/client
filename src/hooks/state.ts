@@ -523,7 +523,7 @@ export const useGetEventHistory = (): Event[] => {
 }
 
 export const useGetColorEventHistory = (colorType: ColorTypes, events: Event[] | any[]): Event[] => {
-    return events.filter((event) => {
+    return events.filter((event:any) => {
         if(!event) {
             return false;
         }

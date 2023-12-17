@@ -16,7 +16,7 @@ export function MovesEndRound() {
   const { config } = usePrepareContractWrite({
     ...colorClashContractConfig,
     functionName: 'endRound',
-  })
+  }as any)
   const { write, data, error, isLoading, isError } = useContractWrite(config)
   const {
     data: receipt,

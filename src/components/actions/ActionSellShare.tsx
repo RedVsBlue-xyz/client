@@ -10,18 +10,12 @@ export function ActionSellShare({ colorType }: { colorType: ColorTypes }) {
   const { price, priceAfterFees } = useColorSellPrice(colorType, amount);
   const colorName = ColorTypeToString[colorType];
   const colorHex = ColorTypeToHexButton[ColorTypes.Red];
-  const { config } = usePrepareContractWrite({
-    ...colorClashContractConfig,
-    functionName: 'sellShares',
-    args: [Number(colorType), BigInt(amount)],
-    value: BigInt(0),
-  });
   const { data, isLoading, isSuccess, write } = useContractWrite({
     ...colorClashContractConfig,
     functionName: 'sellShares',
     args: [Number(colorType), BigInt(amount)],
     value: BigInt(0),
-  });
+  } as any);
   const incrementAmount = () => setAmount(prev => prev + 1);
   const decrementAmount = () => setAmount(prev => Math.max(1, prev - 1));
 

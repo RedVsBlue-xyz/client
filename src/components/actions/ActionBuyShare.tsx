@@ -18,10 +18,10 @@ export function ActionBuyShare({ colorType }: { colorType: ColorTypes }) {
   // });
   const { data, isLoading, isSuccess, write } = useContractWrite({
     ...colorClashContractConfig,
-    functionName: 'buyShares',
-    args: [Number(colorType), BigInt(amount)],
-    value: BigInt(priceAfterFees),
-  })
+    functionName: 'buyShares' as never,
+    args: [Number(colorType), BigInt(amount)] as never,
+    value: BigInt(priceAfterFees) as never,
+  } as any)
 
   const incrementAmount = () => setAmount(prev => prev + 1);
   const decrementAmount = () => setAmount(prev => Math.max(1, prev - 1));
