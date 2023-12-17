@@ -36,7 +36,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
 
   const isBattling = useMemo(() => {
     //console.log("timeLeft", timeLeft);
-    return timeLeft == "0:00";
+    return timeLeft == "0:00:00";
   },[timeLeft]);
 
 
@@ -193,7 +193,7 @@ const RectangularPieChart: React.FC<RectangularPieChartProps> = ({ colors, color
       <div className='timer'>
         {!isBattling && <>
           <div style={{ textAlign: "center" }}>Next <br></br> clash in:</div>
-          <h1>{timeLeft}</h1>
+          <h1 className="timeLeft">{timeLeft}</h1>
         </>}
         {isBattling && <>
           <div style={{ textAlign: "center" }}>Colors are Clashing!</div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { arbitrumGoerli } from 'viem/chains'
+import { chainToConnect } from './contracts'
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 import { Modal } from './modals/Modal'
 
@@ -13,7 +13,7 @@ export function Connected({ children }: { children: React.ReactNode }) {
 
   console.log('chain id', chain?.id)
   const isCorrectChain = useMemo(() => {
-    return chain?.id === arbitrumGoerli.id
+    return chain?.id === chainToConnect.id
   }, [chain])
 
   const isLoggedin = useMemo(() => {
@@ -22,7 +22,7 @@ export function Connected({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isCorrectChain) {
-      switchNetwork?.(arbitrumGoerli.id)
+      switchNetwork?.(chainToConnect.id)
       setShow(true)
     }
   }, [isCorrectChain, switchNetwork])
@@ -34,7 +34,7 @@ export function Connected({ children }: { children: React.ReactNode }) {
       onClose={() => { setShow(false) }}
       >
       <h2>Wrong Network</h2>
-      <p>Please switch to Arbitrum Goerli</p>
+      <p>Please switch to Arbitrum One</p>
     </Modal>
   )
   return <>{children}</>

@@ -1,4 +1,11 @@
+import { defineChain } from 'viem'
+import { arbitrum } from 'viem/chains'
 import { erc20ABI } from 'wagmi'
+
+console.log("process.env.RPC_URL", process.env.RPC_URL)
+
+//arbitrum sepolia
+export const chainToConnect = arbitrum;
 
 export const wagmiContractConfig = {
   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
@@ -209,7 +216,7 @@ export const usdcContractConfig = {
 } as const
 
 export const colorClashContractConfig = {
-  address: "0x04b7F31fcf5aEd8568C1e3fbfdB5c1F0F370fB88",
+  address: "0xfb3DE6d79EE164485F63C49cef14Dc4FE9E37D65",
   abi: [
     {
       "inputs": [],

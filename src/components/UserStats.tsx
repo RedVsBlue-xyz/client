@@ -74,11 +74,12 @@ export function UserStats({ userInfo }: { userInfo: UserInfo }) {
             </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "start", gap: "7px" }}>
-    <p style={{ textDecoration: "underline" }} className="small-p">Your Balance</p>
-    <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-        {colorSharesBalance}
-    </div>
-</div>
+            <p style={{ textDecoration: "underline" }} className="small-p">Your Balance</p>
+            <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                {colorSharesBalance}
+            </div>
+        </div>
+        
     </div>
   )
 }

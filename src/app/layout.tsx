@@ -1,6 +1,5 @@
 import './global.css'
 import { Providers } from './providers'
-import icon from './icon.jpg'
 import Script from 'next/script'
 
 export const metadata = {
@@ -19,7 +18,7 @@ export default function RootLayout({
         <title>{metadata.title}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="Colorclash.io" />
-        <link rel="icon" href={icon as any} />
+        <link rel="icon" href="/icon.jpg" />
       </head>
       <body>
         <Providers>{children}</Providers>

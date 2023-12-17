@@ -1,7 +1,7 @@
 import { log } from 'console'
 import { decodeEventLog, getAbiItem, getContract, parseAbiItem } from 'viem'
 import { configureChains, createConfig } from 'wagmi'
-import { goerli, mainnet, arbitrumGoerli } from 'wagmi/chains'
+import { goerli, mainnet } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -9,10 +9,10 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 
 import { publicProvider } from 'wagmi/providers/public'
-import { colorClashContractConfig } from './components/contracts'
+import { chainToConnect, colorClashContractConfig } from './components/contracts'
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [arbitrumGoerli],
+  [chainToConnect],
   [
     publicProvider(),
   ],
@@ -43,13 +43,13 @@ export const config = createConfig({
 })
 
 async function test(){
-  const events = (await publicClient({chainId: arbitrumGoerli.id
+  const events = (await publicClient({chainId: chainToConnect.id
   }).getLogs({
     fromBlock: START_BLOCK,
     address: colorClashContractConfig.address,
 
   })).map(log => {
-    const decodedLog = decodeEventLog({
+    const decodedLog:any = decodeEventLog({
       abi: colorClashContractConfig.abi,
       topics: log.topics,
       data: log.data,

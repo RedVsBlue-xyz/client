@@ -171,7 +171,7 @@ export const useColorsPrice = (): {[colorTypes: number]: number} => {
 
 
 export const useTimeTill = (endTime: number): string => {
-    const [timer, setTimer] = useState<string>('0:00');
+    const [timer, setTimer] = useState<string>('0:00:00');
     const intervalIdRef = useRef<NodeJS.Timer | null>(null);
 
     useEffect(() => {
@@ -179,11 +179,12 @@ export const useTimeTill = (endTime: number): string => {
         const updateTimer = () => {
             const now = Date.now();
             const timeTill = Math.max(endTime - Math.floor(now / 1000), 0);
-            
-            const minutes = Math.floor(timeTill / 60);
+
+            const hours = Math.floor(timeTill / 3600);
+            const minutes = Math.floor((timeTill % 3600) / 60);
             const seconds = timeTill % 60;
 
-            const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             setTimer(formattedTime);
         };
 
@@ -197,8 +198,8 @@ export const useTimeTill = (endTime: number): string => {
             updateTimer(); // Update immediately before the interval starts
             intervalIdRef.current = setInterval(updateTimer, 1000);
         } else {
-            // If endTime is not in the future, set the timer to "0:00"
-            setTimer('0:00');
+            // If endTime is not in the future, set the timer to "0:00:00"
+            setTimer('0:00:00');
         }
 
         // Cleanup function to clear the interval when the component unmounts or endTime changes
@@ -211,6 +212,7 @@ export const useTimeTill = (endTime: number): string => {
 
     return timer;
 };
+
 
 
 
@@ -297,7 +299,7 @@ export const useContributions = (round: bigint, address: `0x${string}`): { redCo
   export const getPrice = (supply: number, amount: number): number => {
     let sum1 = supply === 0 ? 0 : (supply - 1) * supply * (2 * (supply - 1) + 1) / 6;
     let sum2 = supply === 0 && amount === 1 ? 0 : (supply - 1 + amount) * (supply + amount) * (2 * (supply - 1 + amount) + 1) / 6;
-    return (sum2 - sum1)/ 16000;
+    return (sum2 - sum1)/ 100000000;
   }
 
   export const getAdjustedPrice = (supply: number, amount: number, scalingFactor: number): number => {

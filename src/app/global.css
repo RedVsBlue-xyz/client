@@ -24,6 +24,8 @@ body {
     word-spacing: 0.1px;
     
   }
+
+  
 .container {
     display: flex;
     height: 100vh; /* Full screen height */
@@ -76,6 +78,13 @@ body {
     width: 170px;
     padding: 30px;
     background-color: white;
+  }
+
+  .timeLeft {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin: 0;
+    word-spacing: 0.1px;
   }
 
 .button {
@@ -377,6 +386,13 @@ a {
     margin: 0;
     word-spacing: 0.1px;
     
+  }
+
+  .timeLeft {
+    font-size: 0.9rem;
+    font-weight: bolder;
+    margin: 0;
+    word-spacing: 0.1px;
   }
 
   .small-p {

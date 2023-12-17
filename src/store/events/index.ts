@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { Event } from '../../types/events'
 import { decodeEventLog } from 'viem';
 import { colorClashContractConfig } from '../../components/contracts';
-import { arbitrumGoerli } from 'wagmi/chains';
+import { chainToConnect } from '../../components/contracts';
 import { publicClient } from '../../wagmi';
 import { START_BLOCK } from '../../wagmi';
 
@@ -13,13 +13,13 @@ const contractAddress = '0x000000000';
 export const fetchEvents = createAsyncThunk(
   'events/fetchEvents',
   async (blockNumber: number) => {
-    const events = (await publicClient({chainId: arbitrumGoerli.id
+    const events = (await publicClient({chainId: chainToConnect.id
     }).getLogs({
       fromBlock: START_BLOCK,
       address: colorClashContractConfig.address,
   
     })).map(log => {
-      const decodedLog = decodeEventLog({
+      const decodedLog:any = decodeEventLog({
         abi: colorClashContractConfig.abi,
         topics: log.topics,
         data: log.data,

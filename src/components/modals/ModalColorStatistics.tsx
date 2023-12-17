@@ -15,7 +15,7 @@ import { Modal } from './Modal'
 import { ColorTypeToHex, ColorTypeToString, ColorTypes } from '../../types'
 import { ActionBuyShare } from '../actions/ActionBuyShare'
 import { ActionSellShare } from '../actions/ActionSellShare'
-import { Chart } from '../Chart'
+import { ChartMain } from '../Chart'
 import { getAdjustedPrice, getScalingFactor, useGetColorEventHistory, useGetPriceHistory } from '../../hooks/state'
 import { Event } from '../../types/events'
 import { useAppSelector } from '../../store'
@@ -85,7 +85,7 @@ export function ModalColorStatistics({colorStats, show, onClose}: {colorStats: C
         <h1 style={{display:"flex", gap:"10px"}}><div className='square' style={{backgroundColor:ColorTypeToHex[colorStats.color], width:"40px", height:"40px"}}></div>{ColorTypeToString[colorStats.color]} </h1>
         <div style={{display:"flex", flexDirection:"column"}}>
             <p>Price history</p>
-            <Chart colorType={colorStats.color} data={data} />
+            <ChartMain colorType={colorStats.color} dataIn={data} />
         </div>
         <div className='button-container'>
             <ActionBuyShare colorType={colorStats.color}/>

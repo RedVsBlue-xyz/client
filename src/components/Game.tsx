@@ -16,7 +16,7 @@ import RectangularPieChart from './GameChart';
 import { UserStats } from './UserStats';
 import { START_BLOCK, publicClient } from '../wagmi';
 import { colorClashContractConfig } from './contracts';
-import { arbitrumGoerli } from 'viem/chains';
+import { chainToConnect } from './contracts';
 import { useAppDispatch, useAppSelector } from '../store';
 import { addEvents, setEvents, setLastFetchedBlock } from '../store/events';
 import toast from 'react-hot-toast';
@@ -72,7 +72,7 @@ const fetchEvents = async (blockNumber: number = 0) => {
     
   const events = await (async () => {
     // Fetch logs
-    const logs = await publicClient({chainId: arbitrumGoerli.id}).getLogs({
+    const logs = await publicClient({chainId: chainToConnect.id}).getLogs({
       fromBlock: START_BLOCK,
       address: colorClashContractConfig.address,
     });
@@ -99,7 +99,7 @@ const fetchEvents = async (blockNumber: number = 0) => {
     // const eventsWithBlockDetails = await Promise.all(decodedLogs.map(async (event) => {
     //   try {
     //     // Attempt to fetch block details
-    //     const block = await publicClient({chainId: arbitrumGoerli.id}).getBlock({ blockHash: event.blockHash });
+    //     const block = await publicClient({chainId: chainToConnect.id}).getBlock({ blockHash: event.blockHash });
     
     //     return {
     //       ...event,
@@ -223,7 +223,7 @@ export const Game = () => {
   //Listen to events
   useContractEvent({
     ...colorClashContractConfig,
-    chainId: arbitrumGoerli.id,
+    chainId: chainToConnect.id,
     eventName: "Trade",
     listener(events) {
       events.forEach((event) => {
@@ -252,7 +252,7 @@ export const Game = () => {
   })
   useContractEvent({
     ...colorClashContractConfig,
-    chainId: arbitrumGoerli.id,
+    chainId: chainToConnect.id,
     eventName: "RoundColorDeduction",
     listener(events) {
       events.forEach((event) => {
@@ -281,7 +281,7 @@ export const Game = () => {
   })
   useContractEvent({
     ...colorClashContractConfig,
-    chainId: arbitrumGoerli.id,
+    chainId: chainToConnect.id,
     eventName: "RoundEnded",
     listener(events) {
       events.forEach((event) => {
